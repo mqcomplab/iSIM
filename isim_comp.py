@@ -80,7 +80,7 @@ def calculate_isim(data, n_objects = None, n_ary = 'RR'):
     n_objects : int
         Number of objects, only necessary if the column wize sum is the input data.
 
-    index : str
+    n_ary : str
         String with the initials of the desired similarity index to calculate the iSIM from. 
         Only RR, JT, or SM are available. For other indexes use gen_sim_dict.
 
