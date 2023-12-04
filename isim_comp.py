@@ -68,7 +68,7 @@ def calculate_counters(data, n_objects = None, k = 1):
                 "total_dis": total_dis, "p": p}
     return counters
 
-def calculate_isim(data, n_objects = None, index = 'RR'):
+def calculate_isim(data, n_objects = None, n_ary = 'RR'):
     """Calculate the iSIM index for RR, JT, or SM
 
     Arguments
@@ -109,19 +109,20 @@ def calculate_isim(data, n_objects = None, index = 'RR'):
 
     # Calculate only necessary counters for the desired index 
 
-    if index == 'RR':
+    if n_ary == 'RR':
         a = np.sum(c_total * (c_total - 1) / 2)
         p = n_objects * (n_objects - 1) * len(c_total) / 2
 
         return a/p
     
-    elif index == 'JT':
+    elif n_ary == 'JT':
         a = np.sum(c_total * (c_total - 1) / 2)
         off_coincidences = n_objects - c_total
         total_dis = np.sum(off_coincidences * c_total)
 
         return a/(a + total_dis)
-    elif index == 'SM':
+    
+    elif n_ary == 'SM':
         a = np.sum(c_total * (c_total - 1) / 2)
         off_coincidences = n_objects - c_total
         d = np.sum(off_coincidences * (off_coincidences - 1) / 2)
