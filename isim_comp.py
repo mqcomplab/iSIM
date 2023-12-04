@@ -68,6 +68,68 @@ def calculate_counters(data, n_objects = None, k = 1):
                 "total_dis": total_dis, "p": p}
     return counters
 
+def calculate_isim(data, n_objects = None, index = 'RR'):
+    """Calculate the iSIM index for RR, JT, or SM
+
+    Arguments
+    ---------
+    data : np.ndarray
+        Array of arrays, each sub-array contains the binary object 
+        OR Array with the columnwise sum, if so specify n_objects
+    
+    n_objects : int
+        Number of objects, only necessary if the column wize sum is the input data.
+
+    index : str
+        String with the initials of the desired similarity index to calculate the iSIM from. 
+        Only RR, JT, or SM are available. For other indexes use gen_sim_dict.
+
+    Returns
+    -------
+    isim : float
+        iSIM index for the specified similarity index.
+    """
+
+    # Check if the data is a np.ndarray of a list
+    if not isinstance(data, np.ndarray):
+        raise TypeError("Warning: Input data is not a np.ndarray, to secure the right results please input the right data type")
+    
+    if data.ndim == 1:
+        c_total = data
+        if not n_objects:
+            raise ValueError("Input data is the columnwise sum, please specify number of objects")
+    else:
+        c_total = np.sum(data, axis = 0)
+        if not n_objects:
+            n_objects = len(data)      
+        elif n_objects and n_objects != len(data):
+            print("Warning, specified number of objects is different from the number of objects in data")
+            n_objects = len(data)
+            print("Doing calculations with", n_objects, "objects.")
+
+    # Calculate only necessary counters for the desired index 
+
+    if index == 'RR':
+        a = np.sum(c_total * (c_total - 1) / 2)
+        p = n_objects * (n_objects - 1) * len(c_total) / 2
+
+        return a/p
+    
+    elif index == 'JT':
+        a = np.sum(c_total * (c_total - 1) / 2)
+        off_coincidences = n_objects - c_total
+        total_dis = np.sum(off_coincidences * c_total)
+
+        return a/(a + total_dis)
+    elif index == 'SM':
+        a = np.sum(c_total * (c_total - 1) / 2)
+        off_coincidences = n_objects - c_total
+        d = np.sum(off_coincidences * (off_coincidences - 1) / 2)
+        p = n_objects * (n_objects - 1) * len(c_total) / 2
+
+        return (a + d)/p
+
+
 def gen_sim_dict(data, n_objects = None, k = 1):
     """Calculate a dictionary containing all the available similarity indexes
 
