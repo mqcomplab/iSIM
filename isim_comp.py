@@ -254,5 +254,47 @@ def calculate_comp_sim(data, n_ary = 'RR', c_total = None):
     total = []
     for i, obj in enumerate(comp_sums):
         sim_index = gen_sim_dict(obj, n_objects = n_objects - 1)[n_ary]
-        total.append((i, sim_index))
+        total.append(sim_index)
     return total
+
+def vector_comp_sim(data, n_objects = None, n_ary = 'RR'):
+    """Calculate the complementary similarity for RR, JT, or SM
+
+    Arguments
+    ---------
+    data : np.ndarray
+        Array of arrays, each sub-array contains the binary object 
+        
+    n_objects : int
+        Number of objects, only necessary if the column wize sum is the input data.
+
+    n_ary : str
+        String with the initials of the desired similarity index to calculate the iSIM from. 
+        Only RR, JT, or SM are available. For other indexes use gen_sim_dict.
+
+    Returns
+    -------
+    comp_sims : nd.array
+        1D array with the complementary similarities of all the molecules in the set.
+    """
+    
+    if not n_objects:
+        n_objects = len(data) - 1
+    
+    c_total = np.sum(data, axis = 0)
+    m = len(c_total)
+    
+    comp_matrix = c_total - data
+    
+    a = comp_matrix * (comp_matrix - 1)/2
+    
+    if n_ary == 'RR':
+        comp_sims = np.sum(a, axis = 1)/(m * n_objects * (n_objects - 1)/2)
+    
+    elif n_ary == 'JT':
+        comp_sims = np.sum(a/(a + comp_matrix * (n_objects - comp_matrix)), axis = 1)
+    
+    elif n_ary == 'SM':
+        comp_sims = np.sum((a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1)), axis = 1)/(m * n_objects * (n_objects - 1)/2)
+    
+    return comp_sims
