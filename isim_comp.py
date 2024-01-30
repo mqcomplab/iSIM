@@ -292,7 +292,7 @@ def vector_comp_sim(data, n_objects = None, n_ary = 'RR'):
         comp_sims = np.sum(a, axis = 1)/(m * n_objects * (n_objects - 1)/2)
     
     elif n_ary == 'JT':
-        comp_sims = np.sum(a/(a + comp_matrix * (n_objects - comp_matrix)), axis = 1)
+        comp_sims = np.sum(a, axis = 1)/np.sum((a + comp_matrix * (n_objects - comp_matrix)), axis = 1)
     
     elif n_ary == 'SM':
         comp_sims = np.sum((a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1)), axis = 1)/(m * n_objects * (n_objects - 1)/2)
