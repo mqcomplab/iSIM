@@ -130,7 +130,6 @@ def calculate_isim(data, n_objects = None, n_ary = 'RR'):
 
         return (a + d)/p
 
-
 def gen_sim_dict(data, n_objects = None, k = 1):
     """Calculate a dictionary containing all the available similarity indexes
 
@@ -182,82 +181,13 @@ def gen_sim_dict(data, n_objects = None, k = 1):
     #           'JT':jt, 'RT':rt, 'RR':rr, 'SM':sm, 'SS1':ss1, 'SS2':ss2}
     return Indices
 
-def calculate_medoid(data, n_ary = 'RR', c_total = None):
-    """Calculate the medoid of a set
-       
-       Arguments 
-        --------
-        
-        data: np.array
-            np.array of all the binary objects
+def calculate_medoid(data, n_ary = 'RR'):
+    return np.argmin(calculate_comp_sim(data, n_ary = n_ary))
 
-        n_ary: string
-            string with the initials of the desired similarity index to calculate the medoid from. 
-            See gen_sim_dict description for keys
+def calculate_outlier(data, n_ary = 'RR'):
+    return np.argmax(calculate_comp_sim(data, n_ary = n_ary))
 
-        c_total:
-            np.array with the columnwise sums, not necessary to provide"""
-        
-    if c_total is None: c_total = np.sum(data, axis = 0)
-    elif c_total is not None and len(data[0]) != len(c_total): raise ValueError("Dimensions of objects and columnwise sum differ")
-    n_objects = len(data)
-    index = n_objects + 1
-    min_sim = 1.01
-    comp_sums = c_total - data
-    medoids = []
-    for i, obj in enumerate(comp_sums):
-        sim_index = gen_sim_dict(obj, n_objects = n_objects - 1)[n_ary]
-        if sim_index < min_sim:
-            min_sim = sim_index
-            index = i
-        else:
-            pass
-    return index
-
-def calculate_outlier(data, n_ary = 'RR', c_total = None):
-    """Calculate the medoid of a set
-        Arguments 
-        --------
-        data: np.array
-            np.array of all the binary objects
-
-        n_ary: string
-            string with the initials of the desired similarity index to calculate the medoid from. 
-            See gen_sim_dict description for keys
-
-        c_total:
-            np.array with the columnwise sums, not necessary to provide"""
-
-    if c_total is None: c_total = np.sum(data, axis = 0)
-    elif c_total is not None and len(data[0]) != len(c_total): raise ValueError("Dimensions of objects and columnwise sum differ")
-    n_objects = len(data)
-    index = n_objects + 1
-    max_sim = -0.01
-    comp_sums = c_total - data 
-    for i, obj in enumerate(comp_sums):
-        sim_index = gen_sim_dict(obj, n_objects = n_objects - 1)[n_ary]
-        if sim_index > max_sim:
-            max_sim = sim_index
-            index = i
-        else:
-            pass
-    return index
-
-def calculate_comp_sim(data, n_ary = 'RR', c_total = None):
-    """Calculate the complementary similarity for all elements"""
-
-    if c_total is None: c_total = np.sum(data, axis = 0)
-    elif c_total is not None and len(data[0]) != len(c_total): raise ValueError("Dimensions of objects and columnwise sum differ")
-
-    n_objects = len(data)   
-    comp_sums = c_total - data
-    total = []
-    for i, obj in enumerate(comp_sums):
-        sim_index = gen_sim_dict(obj, n_objects = n_objects - 1)[n_ary]
-        total.append(sim_index)
-    return total
-
-def vector_comp_sim(data, n_objects = None, n_ary = 'RR'):
+def calculate_comp_sim(data, n_ary = 'RR'):
     """Calculate the complementary similarity for RR, JT, or SM
 
     Arguments
@@ -278,8 +208,7 @@ def vector_comp_sim(data, n_objects = None, n_ary = 'RR'):
         1D array with the complementary similarities of all the molecules in the set.
     """
     
-    if not n_objects:
-        n_objects = len(data) - 1
+    n_objects = len(data) - 1
     
     c_total = np.sum(data, axis = 0)
     m = len(c_total)
@@ -295,6 +224,6 @@ def vector_comp_sim(data, n_objects = None, n_ary = 'RR'):
         comp_sims = np.sum(a, axis = 1)/np.sum((a + comp_matrix * (n_objects - comp_matrix)), axis = 1)
     
     elif n_ary == 'SM':
-        comp_sims = np.sum((a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1)), axis = 1)/(m * n_objects * (n_objects - 1)/2)
+        comp_sims = np.sum((a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1)/2), axis = 1)/(m * n_objects * (n_objects - 1)/2)
     
     return comp_sims
