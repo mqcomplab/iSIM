@@ -1,7 +1,7 @@
 from isim_comp import *
 import math 
 
-def medoid_sampling(fingerprints, n_ary = 'JT', percentage = 10):
+def medoid_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, comp_sim = None):
     """
     This function samples a percentage of the objects with the lowest complementarity similarity, the medoids.
     
@@ -13,8 +13,12 @@ def medoid_sampling(fingerprints, n_ary = 'JT', percentage = 10):
     Returns:
     indexes: indexes of the sampled objects
     """
+    
     # Compute the complementarity similarity matrix
-    comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    if comp_sim is None:
+        comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    else:
+        comp_sim = comp_sim
     
     # Sort the complementarity similarities and get the indexes of the sorted array
     indexes = np.argsort(comp_sim)
@@ -22,7 +26,7 @@ def medoid_sampling(fingerprints, n_ary = 'JT', percentage = 10):
     
     return indexes
 
-def outlier_sampling(fingerprints, n_ary = 'JT', percentage = 10):
+def outlier_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, comp_sim = None):
     """
     This function samples a percentage of the objects with the highest complementarity similarity, the outliers.
     
@@ -35,15 +39,18 @@ def outlier_sampling(fingerprints, n_ary = 'JT', percentage = 10):
     indexes: indexes of the sampled objects
     """
     # Compute the complementarity similarity matrix
-    comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
-    
+    if comp_sim is None:
+        comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    else:
+        comp_sim = comp_sim
+
     # Sort the complementarity similarities and get the indexes of the sorted array
     indexes = np.argsort(comp_sim)
     indexes = indexes[-int(len(indexes)*percentage/100):]
     
     return indexes
 
-def extremes_sampling(fingerprints, n_ary = 'JT', percentage = 10):
+def extremes_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, comp_sim = None):
     """
     This function samples a percentage of the objects with the highest and lowest complementarity similarity, medoids and outliers.
     
@@ -58,8 +65,11 @@ def extremes_sampling(fingerprints, n_ary = 'JT', percentage = 10):
     # Define the percentage of extremes to sample
     percentage = percentage/2
 
-    # Compute the complementarity similarity matrix
-    comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    # Compute the complementarity similarity matrix, changes to see if comp_sim is provided
+    if comp_sim is None:
+        comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    else:
+        comp_sim = comp_sim
     
     # Sort the complementarity similarities and get the indexes of the sorted array
     indexes = np.argsort(comp_sim)
@@ -67,7 +77,7 @@ def extremes_sampling(fingerprints, n_ary = 'JT', percentage = 10):
     
     return indexes
 
-def batched_sampling(fingerprints, n_ary = 'JT', percentage = 10, batches = None):
+def batched_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, batches = None, comp_sim = None):
     """
     This function separates the objects in batches according to their complementarity similarity and samples a percentage of the objects
     in each batch to add up to the desired total percentage.
@@ -85,7 +95,10 @@ def batched_sampling(fingerprints, n_ary = 'JT', percentage = 10, batches = None
     n_objects = len(fingerprints)
 
     # Compute the complementarity similarity matrix
-    comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    if comp_sim is None:
+        comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    else:
+        comp_sim = comp_sim
     
     # Sort the complementarity similarities and get the indexes of the sorted array
     indexes = np.argsort(comp_sim)
@@ -119,7 +132,7 @@ def batched_sampling(fingerprints, n_ary = 'JT', percentage = 10, batches = None
   
     return np.array(sampled_indexes)
 
-def representative_sampling(fingerprints, n_ary = 'JT', percentage = 10, n_bins = 10, hard_cap = True):
+def representative_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 10, hard_cap = True, comp_sim = None):
     """
     Representative sampling according to comp_sim values.
     
@@ -144,7 +157,10 @@ def representative_sampling(fingerprints, n_ary = 'JT', percentage = 10, n_bins 
         raise ValueError("Warning: The number of objects to sample is too low for the number of bins, please specify a higher percentage, or a lower number of bins")
     
     # Compute the complementarity similarity matrix
-    comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    if comp_sim is None:
+        comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+    else:
+        comp_sim = comp_sim
 
     # Get the min and max comp_sim values
     min = np.min(comp_sim)
@@ -183,4 +199,3 @@ def representative_sampling(fingerprints, n_ary = 'JT', percentage = 10, n_bins 
         i += 1
 
     return np.array(order_sampled)
-
