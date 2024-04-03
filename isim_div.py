@@ -1,18 +1,8 @@
 from isim_comp import *
 
-"""                             iSIM_Diversity
-    ----------------------------------------------------------------------
-    
-    Miranda-Quintana Group, Department of Chemistry, University of Florida 
-    
-    ----------------------------------------------------------------------
-    
-    Please, cite the original paper on iSIM:
 
-    """
-
-def get_new_index_n(total_data, selected_condensed, n, select_from_n, n_ary = 'RR', k = 1):
-    """Select a diverse object using the iSIMDiv algorithm"""
+def get_new_index_n(total_data, selected_condensed, n, select_from_n, n_ary = 'RR'):
+    """Select a diverse object using the ECS_MeDiv algorithm"""
     n_total = n + 1
 
     # min value that is guaranteed to be higher than all the comparisons
@@ -26,7 +16,28 @@ def get_new_index_n(total_data, selected_condensed, n, select_from_n, n_ary = 'R
         # column sum
         c_total = selected_condensed + total_data[i]
         # calculating similarity
-        sim_index = gen_sim_dict(c_total, n_total, k = k)[n_ary]
+        sim_index = gen_sim_dict(c_total, n_total)[n_ary]
+        # if the sim of the set is less than the similarity of the previous diverse set, update min_value and index
+        if sim_index < min_value:
+            index = i
+            min_value = sim_index
+    return index
+
+def get_new_index_sqrt(total_data, selected_condensed, n, select_from_n, k = 2, n_ary = 'RR'):
+    n_total = n + 1
+
+    # min value that is guaranteed to be higher than all the comparisons
+    min_value = 3.08
+    
+    # placeholder index
+    index = len(total_data) + 1
+    
+    # for all indices that have not been selected
+    for i in select_from_n:
+        # column sum
+        c_total = selected_condensed + total_data[i]
+        # calculating similarity
+        sim_index = sqrt_isim(c_total, n_objects = n_total, k = k, n_ary = n_ary)
         # if the sim of the set is less than the similarity of the previous diverse set, update min_value and index
         if sim_index < min_value:
             index = i
@@ -34,7 +45,6 @@ def get_new_index_n(total_data, selected_condensed, n, select_from_n, n_ary = 'R
     return index
 
 def get_new_index_reverse(total_data, selected_condensed, n, select_from_n, n_ary = 'RR'):
-    """Select a diverse object using the iSIMDiv algorithm (backward order)"""
     n_total =  n - 1
 
     #min value that is guaranteed to be lower than all the comparisons
@@ -45,7 +55,6 @@ def get_new_index_reverse(total_data, selected_condensed, n, select_from_n, n_ar
 
     #for all the molecules that are already selected
     for i in select_from_n:
-        #print(i)
         #new column sum
         c_total = selected_condensed - total_data[i]
         #calculating isim
@@ -54,9 +63,26 @@ def get_new_index_reverse(total_data, selected_condensed, n, select_from_n, n_ar
         if sim_index < min_value:
             index = i
             min_value = sim_index
+
     return index
 
-def diversity(data, percentage: int, start = 'medoid', n_ary = 'RR', k = 1):
+
+def get_new_indices_b_max(total_data, selected_b, select_from_b, n_ary):
+    all_comps = []
+    for i in select_from_b:
+        comps = []
+        for j in selected_b:
+            new_indices = [i, j]
+            new_fingerprints = total_data[new_indices]
+            sim_index = gen_sim_dict(new_fingerprints)[n_ary]
+            comps.append(sim_index)
+        all_comps.append(comps)
+    sim_values = [max(comps) for comps in all_comps]
+    min_sim = min(sim_values)
+    min_list = [j for j, v in enumerate(sim_values) if v == min_sim]
+    return select_from_b[min_list[0]]
+
+def diversity(data, percentage: int, start = 'medoid', n_ary = 'RR', method = 'isim'):
     """ diversity: function to select from a dataset the most diverse molecules
     -----------------------------------------------------------------------
 
@@ -112,7 +138,13 @@ def diversity(data, percentage: int, start = 'medoid', n_ary = 'RR', k = 1):
         # indices from which to select the new fingerprints
         select_from_n = np.delete(total_indices, selected_n)
 
-        new_index_n = get_new_index_n(data, selected_condensed, n, select_from_n, n_ary = n_ary, k = k)
+        if method == 'isim':
+            # new index selected
+            new_index_n = get_new_index_n(data, selected_condensed, n, select_from_n, n_ary = n_ary)
+        elif method == 'bmax':
+            new_index_n = get_new_indices_b_max(data, selected_n, select_from_n, n_ary = n_ary)
+        elif isinstance(method, int):
+            new_index_n = get_new_index_sqrt(data, selected_condensed, n, select_from_n, k = method, n_ary = n_ary)
 
         # updating column sum vector
         selected_condensed += data[new_index_n]
@@ -124,7 +156,7 @@ def diversity(data, percentage: int, start = 'medoid', n_ary = 'RR', k = 1):
     return selected_n
 
 def reverse_diversity(data, percentage: int, n_ary = 'RR'):
-    """ diversity: function to select from a dataset the most diverse molecules (reverse order)
+    """ diversity: function to select from a dataset the most diverse molecules
     -----------------------------------------------------------------------
 
     Arguments
@@ -163,17 +195,20 @@ def reverse_diversity(data, percentage: int, n_ary = 'RR'):
     while len(select_from_n) > n_max:
         # indices from which to select the new fingerprints
         select_from_n = np.delete(total_indices, deselected_n)
-        
+        #print(selected_condensed)        
+
         # new index selected
         new_index_n = get_new_index_reverse(data, selected_condensed, n, select_from_n, n_ary = n_ary)
 
         # updating column sum vector
-        selected_condensed -= data[new_index_n]
+        selected_condensed = selected_condensed - data[new_index_n]
 
         # updating selected indices
         deselected_n.append(new_index_n)
 
         # Update the number of selected 
         n = n_total - len(deselected_n)
-        
+
     return select_from_n
+
+
