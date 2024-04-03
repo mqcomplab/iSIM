@@ -91,14 +91,13 @@ def batched_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, batches
     Returns:
     sampled_indexes: indexes of the sampled objects
     """
-    # Define the number of objects
-    n_objects = len(fingerprints)
-
     # Compute the complementarity similarity matrix
     if comp_sim is None:
         comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+        n_objects = len(fingerprints)
     else:
         comp_sim = comp_sim
+        n_objects = len(comp_sim)
     
     # Sort the complementarity similarities and get the indexes of the sorted array
     indexes = np.argsort(comp_sim)
@@ -147,21 +146,23 @@ def representative_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, 
     
     Returns:
     sampled_indexes: indexes of the sampled objects
-    """
-    # Define the  number of objects and the number of objects to sample
-    n_objects = len(fingerprints)
-    n_sample = int(n_objects*percentage/100)
-
-    # Check if the number of objects to sample is not less than the number of bins
-    if n_sample < 1 or n_sample < n_bins:
-        raise ValueError("Warning: The number of objects to sample is too low for the number of bins, please specify a higher percentage, or a lower number of bins")
+    """  
     
     # Compute the complementarity similarity matrix
     if comp_sim is None:
         comp_sim =  calculate_comp_sim(fingerprints, n_ary = n_ary)
+        n_objects = len(fingerprints)
     else:
         comp_sim = comp_sim
-
+        n_objects = len(comp_sim)
+    
+    # Define the number of objetcs to sample
+    n_sample = int(n_objects*percentage/100)
+    
+    # Check if the number of objects to sample is not less than the number of bins
+    if n_sample < 1 or n_sample < n_bins:
+        raise ValueError("Warning: The number of objects to sample is too low for the number of bins, please specify a higher percentage, or a lower number of bins")
+    
     # Get the min and max comp_sim values
     min = np.min(comp_sim)
     max = np.max(comp_sim)

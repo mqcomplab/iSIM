@@ -1,5 +1,5 @@
 from isim_comp import *
-
+import random
 
 def get_new_index_n(total_data, selected_condensed, n, select_from_n, n_ary = 'RR'):
     """Select a diverse object using the ECS_MeDiv algorithm"""
@@ -37,7 +37,7 @@ def get_new_index_sqrt(total_data, selected_condensed, n, select_from_n, k = 2, 
         # column sum
         c_total = selected_condensed + total_data[i]
         # calculating similarity
-        sim_index = sqrt_isim(c_total, n_objects = n_total, k = k, n_ary = n_ary)
+        sim_index = gen_sim_dict(c_total, n_objects = n_total, k = k)[n_ary]
         # if the sim of the set is less than the similarity of the previous diverse set, update min_value and index
         if sim_index < min_value:
             index = i
