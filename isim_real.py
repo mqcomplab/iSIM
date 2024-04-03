@@ -60,34 +60,3 @@ def isim_sm(data):
     flip_data = 1 - data
     flip_sum, sq_flip_sum, flip_ij = process_matrix(flip_data)
     return 2 * (ij + flip_ij)/(m * n_objects * (n_objects - 1))
-
-#total_max = 500
-#size_max = 1000
-#s = ''
-#for _ in range(100):
-#    fp_total = np.random.randint(10, total_max)
-#    fp_size = np.random.randint(10, size_max)
-    
-#    total_fingerprints = np.random.rand(fp_total, fp_size)
-    
-    #total_fingerprints = np.array([[1,1,0,1,0],[1,0,1,1,0],[0,1,1,1,0],[0,0,0,1,1]])
-    
-    #isim = gen_sim_dict(total_fingerprints)['JT']
-#    isim = isim_jt(total_fingerprints)
-    
-#    jts = []
-#    for i, fp1 in enumerate(total_fingerprints):
-#        for j, fp2 in enumerate(total_fingerprints):
-#            if i == j:
-#                pass
-#            else:
-                #jt = np.dot(fp1, fp2)/(np.dot(fp1, fp1)+np.dot(fp2, fp2)-np.dot(fp1, fp2))
-                #jt2 = np.dot(fp1, fp2)/(np.dot(fp1, fp2) + np.dot(1-fp1, fp2) + np.dot(fp1, 1-fp2))
-                #print(jt, jt2)
-                #jts.append(pair_jt(fp1, fp2))
-#    jts = np.array(jts)
-#    p_jt = np.mean(jts)
-    #print(pair_jt, isim)
-#    s += '{:10.6}{:10.6}\n'.format(p_jt, isim)
-#with open('test.txt', 'w') as outfile:
-#    outfile.write(s[:-1])
