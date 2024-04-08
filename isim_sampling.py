@@ -77,16 +77,17 @@ def extremes_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, comp_s
     
     return indexes
 
-def batched_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, batches = None, comp_sim = None):
+def stratified_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, strata = None, comp_sim = None):
     """
-    This function separates the objects in batches according to their complementarity similarity and samples a percentage of the objects
-    in each batch to add up to the desired total percentage.
+    This function separates the objects in strata according to their complementarity similarity and it samples a percentage of the objects
+    in each batch to add up to the desired total percentage. If objects to sample in each stratum are not equal lowest complementary
+    similarity strata are sampled first.
     
     Parameters:
-    fingerprints: numpy array of fingerprints
-    n_ary: type of similarity to index compute
-    percentage: percentage of objects to sample
-    batches: number of batches to separate the objects
+    fingerprints: np.ndarray, numpy array of fingerprints
+    n_ary: str, type of similarity to index compute {'JT', 'SM', 'RR'}
+    percentage: int or float, percentage of objects to sample
+    strata: int, number of strata to separate the objects in
     
     Returns:
     sampled_indexes: indexes of the sampled objects
@@ -103,26 +104,26 @@ def batched_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, batches
     indexes = np.argsort(comp_sim)
 
     # Define the number of batches if not specified
-    if not batches:
-        batches = int(n_objects*percentage/100)
+    if not strata:
+        strata = int(n_objects*percentage/100)
 
     # Split the data in batches
-    batches = np.array_split(indexes, batches)    
+    strata = np.array_split(indexes, strata)    
         
     # Define the total number of objects to sample and the number of objects to sample in each batch
     n_sample = int(n_objects*percentage/100)
 
     # Check if the number of objects to sample is not less than the number of batches
-    if n_sample < len(batches):
+    if n_sample < len(strata):
         raise ValueError("Warning: The number of objects to sample is too low for the number of batches, please specify a higher percentage, or a lower number of batches")
 
     # Sample the objects in each batch
     sampled_indexes = []
     i = 0
     while len(sampled_indexes) < n_sample:
-        for b in batches:
-            if len(b) > i:
-                sampled_indexes.append(b[i])
+        for stratum in strata:
+            if len(stratum) > i:
+                sampled_indexes.append(stratum[i])
                 if len(sampled_indexes) >= n_sample:
                         break
             else:
@@ -131,9 +132,9 @@ def batched_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, batches
   
     return np.array(sampled_indexes)
 
-def representative_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 10, hard_cap = True, comp_sim = None):
+def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 10, hard_cap = True, comp_sim = None):
     """
-    Representative sampling according to comp_sim values.
+    Quota sampling according to comp_sim values.
     
     Divides the range of comp_sim values in nbins and then
     uniformly selects nsample molecules, consecutively
