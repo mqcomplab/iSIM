@@ -1,5 +1,4 @@
 from isim_comp import *
-import math 
 
 def medoid_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, comp_sim = None):
     """

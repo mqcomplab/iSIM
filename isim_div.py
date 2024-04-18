@@ -1,5 +1,4 @@
 from isim_comp import *
-import random
 
 def get_new_index_n(total_data, selected_condensed, n, select_from_n, n_ary = 'RR'):
     """Select a diverse object using the ECS_MeDiv algorithm"""
@@ -114,7 +113,7 @@ def diversity(data, percentage: int, start = 'medoid', n_ary = 'RR', method = 'i
         seed = calculate_medoid(data,  n_ary = n_ary)
         selected_n = [seed]
     elif start == 'random':
-        seed = random.randint(0, n_total - 1)
+        seed = np.random.randint(0, n_total - 1)
         selected_n = [seed]
     elif start == 'outlier':
         seed = calculate_outlier(data, n_ary = n_ary)

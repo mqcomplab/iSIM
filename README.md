@@ -10,3 +10,19 @@ The quantification of molecular similarity has been present since the beginning 
 Curated CHEMBL datasets were retrieved from:
 https://github.com/molML/MoleculeACE/blob/main/MoleculeACE/Data/benchmark_data/old/
 """Exposing the Limitations of Molecular Machine Learning with Activity Cliffs. Derek van Tilborg, Alisa Alenicheva, and Francesca Grisoni. Journal of Chemical Information and Modeling, 2022, 62 (23), 5938-5951. DOI: 10.1021/acs.jcim.2c01073"""
+
+
+### Prerequisites
+iSIM current supports Python 3.10. 
+
+For iSIM functions:
+numpy (1.24.2)
+
+For plots and analysis (notebooks):
+matplotlib (3.7.3)
+pandas (2.0.2)
+random 
+rdkit (2023.03.1)
+scipy (1.10.1)
+seaborn (0.12.2)
+sklearn (1.3.1)
