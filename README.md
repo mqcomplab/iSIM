@@ -16,13 +16,21 @@ https://github.com/molML/MoleculeACE/blob/main/MoleculeACE/Data/benchmark_data/o
 iSIM current supports Python 3.10. 
 
 For iSIM functions:
+
 numpy (1.24.2)
 
 For plots and analysis (notebooks):
+
 matplotlib (3.7.3)
+
 pandas (2.0.2)
+
 random 
+
 rdkit (2023.03.1)
+
 scipy (1.10.1)
+
 seaborn (0.12.2)
+
 sklearn (1.3.1)
