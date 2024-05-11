@@ -34,3 +34,7 @@ scipy (1.10.1)
 seaborn (0.12.2)
 
 sklearn (1.3.1)
+
+### Funding
+Research contained in this package was supported by the National Institute of General Medical Sciences of the National Institutes  of  Health  under  award  number  R35GM150620. 
+
