@@ -1,4 +1,4 @@
-from isim_comp import *
+from iSIM.comp import *
 
 def get_new_index_n(total_data, selected_condensed, n, select_from_n, n_ary = 'RR'):
     """Select a diverse object using the ECS_MeDiv algorithm"""
