@@ -7,7 +7,9 @@ import numpy as np
     
     ----------------------------------------------------------------------
     
-    Please, cite the original paper:   
+    Please, cite the original paper:
+
+    https://pubs.rsc.org/en/content/articlehtml/2024/dd/d4dd00041b
     """
 
 """                         REAL-VALUED PAIRWISE SIMILARITY FUNCTIONS                                 """
