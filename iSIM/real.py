@@ -7,7 +7,9 @@ import numpy as np
     
     ----------------------------------------------------------------------
     
-    Please, cite the original paper:   
+    Please, cite the original paper:
+
+    https://pubs.rsc.org/en/content/articlehtml/2024/dd/d4dd00041b
     """
 
 """                         REAL-VALUED PAIRWISE SIMILARITY FUNCTIONS                                 """
@@ -177,7 +179,7 @@ def comp_sim_sm(fingerprints: np.ndarray):
     flip_sq_sum = np.sum((flip_sum - flip_matrix)**2, axis=1)
     flip_sum_sq = np.sum(had_flip_sum - had_flip_matrix, axis=1)
 
-    comp_sim = np.ndarray((comp_sq_sum - comp_sum_sq + flip_sq_sum - flip_sum_sq)/(len(fingerprints[0]) * n * (n - 1)))
+    comp_sim = np.array((comp_sq_sum - comp_sum_sq + flip_sq_sum - flip_sum_sq)/(len(fingerprints[0]) * n * (n - 1)))
     
     return comp_sim
 

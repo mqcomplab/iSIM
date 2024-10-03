@@ -11,6 +11,8 @@ import numpy as np
     
     Please, cite the original paper on iSIM:
 
+    https://pubs.rsc.org/en/content/articlehtml/2024/dd/d4dd00041b
+
     """
 
 def pre_process(fingerprints):
