@@ -11,7 +11,10 @@ Curated CHEMBL datasets were retrieved from:
 https://github.com/molML/MoleculeACE/blob/main/MoleculeACE/Data/benchmark_data/old/
 """Exposing the Limitations of Molecular Machine Learning with Activity Cliffs. Derek van Tilborg, Alisa Alenicheva, and Francesca Grisoni. Journal of Chemical Information and Modeling, 2022, 62 (23), 5938-5951. DOI: 10.1021/acs.jcim.2c01073"""
 
+### To install: 
+`git clone git@github.com:mqcomplab/iSIM.git`
 
+`pip install -e .`
 ### Prerequisites
 iSIM current supports Python 3.10. 
 

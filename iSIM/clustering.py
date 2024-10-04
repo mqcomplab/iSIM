@@ -1,4 +1,4 @@
-from isim_comp import gen_sim_dict
+from iSIM.comp import gen_sim_dict
 import numpy as np
 
 
