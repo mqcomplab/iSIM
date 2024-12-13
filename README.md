@@ -14,6 +14,8 @@ https://github.com/molML/MoleculeACE/blob/main/MoleculeACE/Data/benchmark_data/o
 ### To install: 
 `git clone git@github.com:mqcomplab/iSIM.git`
 
+`cd iSIM/`
+
 `pip install -e .`
 ### Prerequisites
 iSIM current supports Python 3.10. 
