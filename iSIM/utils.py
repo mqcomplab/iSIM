@@ -51,7 +51,7 @@ def binary_fps(smiles: list, fp_type: str = 'RDKIT', n_bits: int = 2048):
             DataStructs.cDataStructs.ConvertToNumpyArray(AllChem.GetMorganFingerprintAsBitVect(mol, 3, nBits=n_bits), fp)
     elif fp_type == 'MACCS':
         def generate_fp(mol, fp):
-            DataStructs.cDataStructs.ConvertToNumpyArray(Chem.MACCSkeys.GenMACCSKeys(mol), fp)
+            DataStructs.cDataStructs.ConvertToNumpyArray(Chem.rdMolDescriptors.GetMACCSKeysFingerprint(mol), fp)
     else:
         print('Invalid fingerprint type: ', fp_type)
         exit(0)
