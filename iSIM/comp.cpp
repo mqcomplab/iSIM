@@ -80,25 +80,25 @@ double calculate_isim(const Eigen::ArrayXXf data, std::string n_ary){
 }
 
 
-Eigen::ArrayXf calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string n_ary){
+Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string n_ary){
     int n_objects = data.rows() - 1; 
-    Eigen::ArrayXf col_sum = data.colwise().sum();
-    Eigen::ArrayXXf col_sum_m = col_sum.transpose().replicate(n_objects+1, 1);
-    Eigen::ArrayXXf comp_matrix = col_sum_m - data;
-    Eigen::ArrayXXf a = comp_matrix*(comp_matrix-1.0)/2.0;
+    Eigen::ArrayXd col_sum = data.cast<double>().colwise().sum();
+    Eigen::ArrayXXd col_sum_m = col_sum.transpose().replicate(n_objects+1, 1);
+    Eigen::ArrayXXd comp_matrix = col_sum_m - data.cast<double>();
+    Eigen::ArrayXXd a = comp_matrix*(comp_matrix-1.0)/2.0;
     int m = data.cols();
     
     if (n_ary == "RR"){
-        Eigen::ArrayXf comp_sim = a.rowwise().sum()/(m * n_objects * (n_objects-1.0)/2.0);
+        Eigen::ArrayXd comp_sim = a.rowwise().sum()/(m * n_objects * (n_objects-1.0)/2.0);
         return comp_sim;
     }
     else if (n_ary == "JT"){
-        Eigen::ArrayXf comp_sims = a.rowwise().sum();
+        Eigen::ArrayXd comp_sims = a.rowwise().sum();
         comp_sims /= ((a+ comp_matrix*(n_objects - comp_matrix)).rowwise().sum());
         return comp_sims;
     }
     else if (n_ary == "SM"){
-        Eigen::ArrayXf comp_sims = (a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1.0)/2.0).rowwise().sum();
+        Eigen::ArrayXd comp_sims = (a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1.0)/2.0).rowwise().sum();
         comp_sims /= (m * n_objects * (n_objects - 1.0)/2.0);
         return comp_sims;
     }
@@ -107,14 +107,14 @@ Eigen::ArrayXf calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string
 }
 
 int calculate_medoid(const Eigen::ArrayXXf data, const std::string n_ary){
-    Eigen::ArrayXf comp_sims = calculate_comp_sim(data, n_ary);
+    Eigen::ArrayXd comp_sims = calculate_comp_sim(data, n_ary);
     int pos;
     float min_sim = comp_sims.minCoeff(&pos);
     return pos;
 }
 
 int calculate_outlier(const Eigen::ArrayXXf data, const std::string n_ary){
-    Eigen::ArrayXf comp_sims = calculate_comp_sim(data, n_ary);
+    Eigen::ArrayXd comp_sims = calculate_comp_sim(data, n_ary);
     int pos;
     float max_sim = comp_sims.maxCoeff(&pos);
     return pos;

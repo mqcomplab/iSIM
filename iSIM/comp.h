@@ -20,7 +20,7 @@ const int n_objects, const int k);
 std::map<std::string, double> gen_sim_dict(const Eigen::ArrayXXf data, 
 const int k);
 
-Eigen::ArrayXf calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string n_ary);
+Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string n_ary);
 int calculate_medoid(const Eigen::ArrayXXf data, const std::string n_ary);
 
 int calculate_outlier(const Eigen::ArrayXXf data, const std::string n_ary);
