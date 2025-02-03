@@ -10,14 +10,20 @@ setup(
     description=DESCRIPTION,
     url='https://github.com/mqcomplab/iSIM',
     packages=find_packages(),
+    include_package_data=True, 
     install_requires=[
         'numpy', 
         'matplotlib', 
         'pandas', 
-        'rdkit', 
+        'rdkit', #Not available on PyPI. User might need to install separately
         'scipy', 
         'seaborn', 
         'scikit-learn'
-    ]
+    ], 
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Operating System :: OS Independent',
+    ],
+    zip_safe=False,
 )
 
