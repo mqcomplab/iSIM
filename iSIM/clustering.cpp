@@ -33,8 +33,8 @@ std::vector<int> HierarchicalClustering::maxIndices(std::string n_ary){
     int max1 = -1;
     int max2 = -1;
     std::vector<HCTree> current_tree_list = getTreeList();
-    for (int i=0; i<current_tree_list.size(); i++){
-        for(int j=i+1; j<current_tree_list.size(); j++){
+    for (u_int i=0; i<current_tree_list.size(); i++){
+        for(u_int j=i+1; j<current_tree_list.size(); j++){
             HCTree tree_i = current_tree_list[i];
             HCTree tree_j = current_tree_list[j];
             Eigen::ArrayXf fps_colsum = tree_i.getRootFps() + tree_j.getRootFps();

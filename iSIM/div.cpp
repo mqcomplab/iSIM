@@ -1,11 +1,5 @@
 #include "div.h"
 
-//start only for testing:
-#include <sstream>
-#include <fstream>
-#include <chrono>
-// end only for testing
-
 int get_new_index_n(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_condensed, int n, std::vector<int> select_from_n, std::string n_ary){
     int index = total_data.rows();
     double min_value = 3.08;
@@ -55,7 +49,7 @@ int get_new_index_reverse(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_co
 
 int get_new_indices_b_max(Eigen::ArrayXXf total_data, std::vector<int> selected_b, std::vector<int> select_from_b, std::string n_ary){
     double min_sim = 3.08;
-    int idx;
+    int idx = -1;
     for (int i : select_from_b){
         std::vector<double> comps;
         double max_sim = -3.08;
@@ -71,6 +65,9 @@ int get_new_indices_b_max(Eigen::ArrayXXf total_data, std::vector<int> selected_
             min_sim = max_sim;
             idx = i;
         }
+    }
+    if (idx == -1){
+        throw std::invalid_argument("No valid index found");
     }
     return idx;
 }
@@ -141,31 +138,4 @@ std::vector<int> reverse_diversity(Eigen::ArrayXXf data, double percentage, std:
         select_from_n.erase(std::find(select_from_n.begin(), select_from_n.end(), new_idx));
     }
     return select_from_n;
-}
-
-int main(){
-    std::ifstream indata;
-    indata.open("CHEMBL214_Ki_fps.csv");
-    std::string line;
-    std::vector<float> values; // Change to float
-    uint rows = 0;
-    while(std::getline(indata, line)){
-        std::stringstream lineStream(line);
-        std::string cell;
-        while (std::getline(lineStream, cell, ',')){
-            values.push_back(std::stof(cell)); // Change to stof
-        }
-        ++rows;
-        if (rows==50){
-            break;
-        }
-    }
-    Eigen::Map<const Eigen::ArrayXXf> array(values.data(), 2048, rows);
-    Eigen::ArrayXXf fps = array.transpose();
-    std::vector<int> idx = reverse_diversity(fps, 10.0, "JT");
-    for (auto vi : idx){
-        std::cout << vi << " ";
-    }
-    std::cout << std::endl;
-    return 0;
 }

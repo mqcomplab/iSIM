@@ -109,14 +109,14 @@ Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string
 int calculate_medoid(const Eigen::ArrayXXf data, const std::string n_ary){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(data, n_ary);
     int pos;
-    float min_sim = comp_sims.minCoeff(&pos);
+    comp_sims.minCoeff(&pos);
     return pos;
 }
 
 int calculate_outlier(const Eigen::ArrayXXf data, const std::string n_ary){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(data, n_ary);
     int pos;
-    float max_sim = comp_sims.maxCoeff(&pos);
+    comp_sims.maxCoeff(&pos);
     return pos;
 }
 

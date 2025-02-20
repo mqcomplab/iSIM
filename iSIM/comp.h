@@ -1,4 +1,5 @@
-// Function declarations
+#include "isim.h"
+
 std::map<std::string, double> calculate_counters(const Eigen::ArrayXf col_sum, 
                                                 const int n_objects, const int k);
 
@@ -21,6 +22,7 @@ std::map<std::string, double> gen_sim_dict(const Eigen::ArrayXXf data,
 const int k);
 
 Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string n_ary);
+
 int calculate_medoid(const Eigen::ArrayXXf data, const std::string n_ary);
 
 int calculate_outlier(const Eigen::ArrayXXf data, const std::string n_ary);

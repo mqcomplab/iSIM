@@ -1,4 +1,4 @@
-include "real.h"
+#include "real.h"
 
 double pair_rr(const Eigen::ArrayXf fp1, const Eigen::ArrayXf fp2){
     return fp1.matrix().dot(fp2.matrix())/fp1.size();
@@ -139,13 +139,13 @@ Eigen::ArrayXf calculate_comp_sim_real(const Eigen::ArrayXXf fingerprints, std::
 int calculate_medoid_real(const Eigen::ArrayXXf data, const std::string n_ary){
     Eigen::ArrayXf comp_sims = calculate_comp_sim_real(data, n_ary);
     int pos;
-    float min_sim = comp_sims.minCoeff(&pos);
+    comp_sims.minCoeff(&pos);
     return pos;
 }
 
 int calculate_outlier_real(const Eigen::ArrayXXf data, const std::string n_ary){
     Eigen::ArrayXf comp_sims = calculate_comp_sim_real(data, n_ary);
     int pos;
-    float max_sim = comp_sims.maxCoeff(&pos);
+    comp_sims.maxCoeff(&pos);
     return pos;
 }

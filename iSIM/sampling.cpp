@@ -1,17 +1,8 @@
 #include "sampling.h"
-#include <vector>
-#include <cmath>
-
-//start only for testing:
-#include <sstream>
-#include <fstream>
-#include <chrono>
-#include <iomanip>
-// end only for testing
 
 std::vector<int> getSortedIndices(const Eigen::ArrayXd& array) {
     std::vector<int> indices(array.size());
-    for (int i = 0; i < indices.size(); ++i) {
+    for (u_int i = 0; i < indices.size(); ++i) {
         indices[i] = i;
     }
     std::sort(indices.begin(), indices.end(), [&array](int a, int b) {
@@ -89,27 +80,22 @@ std::vector<int> stratified_sampling(Eigen::ArrayXXf fps, std::string n_ary, dou
 std::vector<int> quota_sampling(Eigen::ArrayXXf fps, std::string n_ary, double percentage, int n_bins){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(fps, n_ary);
     std::vector<int> sorted_ind = getSortedIndices(comp_sims);
-    int n_objects = sorted_ind.size();
-    int n_sample = n_objects * percentage/100;
+    u_int n_objects = sorted_ind.size();
+    u_int n_sample = n_objects * percentage/100;
     double min_comp_sim = comp_sims[sorted_ind[0]];
     double max_comp_sim = comp_sims[sorted_ind.back()];
     double comp_sim_diff = max_comp_sim - min_comp_sim;
     long double step = comp_sim_diff / n_bins;
-
-    std::cout <<std::setprecision(std::numeric_limits<double>::digits10 + 1) << min_comp_sim << std::endl;
-    std::cout << max_comp_sim << std::endl;
-    std::cout << "step: " <<std::setprecision(std::numeric_limits<double>::digits10 + 1) << step << std::endl;
     std::vector<std::vector<int>> bins; // idx of molecules in a given bin
     int start_idx_bin = 0;
     for (int b_idx = 0; b_idx < n_bins+1; b_idx++){
         double bin_low = min_comp_sim + step*b_idx;
         double bin_high = min_comp_sim + step*(b_idx+1);
         std::vector<int> bin_b;
-        for (int i = start_idx_bin; i < n_objects; i++){
+        for (u_int i = start_idx_bin; i < n_objects; i++){
             double comp_sim_i = comp_sims[sorted_ind[i]];
             if (comp_sim_i >= bin_low && comp_sim_i < bin_high){
                 bin_b.push_back(sorted_ind[i]);
-                // std::cout << comp_sims[sorted_ind[i]] << "     " << compsim_divide << std::endl;
             }
             else if(comp_sim_i >= bin_high){
                 start_idx_bin = i;
@@ -124,7 +110,7 @@ std::vector<int> quota_sampling(Eigen::ArrayXXf fps, std::string n_ary, double p
     
     int n_bins_filled = bins.size();
     std::vector<int> sampled_idx;
-    int i = 0;
+    u_int i = 0;
     while (sampled_idx.size()<n_sample){
         for (int b=0; b < n_bins_filled; b++){
             if (bins[b].size()>i){
