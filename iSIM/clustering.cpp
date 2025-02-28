@@ -5,6 +5,9 @@ HierarchicalClustering::HierarchicalClustering(Eigen::ArrayXXf fps){
 
     std::vector<HCTree> leaf_list= {};
     current_ind = 0;
+    if (fps.rows() == 0){
+        std::cerr << "Warning: No fingerprints provided." << std::endl;
+    }
     for (int i = 0; i<fps.rows(); i++){
         HCTree tree = HCTree();
         std::list<int> idx = {i};
@@ -52,6 +55,9 @@ std::vector<int> HierarchicalClustering::maxIndices(std::string n_ary){
 
 HCTree HierarchicalClustering::runClustering(std::string n_ary){
     int N = getTreeList().size()-1;
+    if (N<1){
+        throw std::invalid_argument("Number of trees must be greater than 1.");
+    }
     for (int i=0; i<N; i++){
         // combine most similar clusters
         std::vector<int> idx = maxIndices(n_ary);
