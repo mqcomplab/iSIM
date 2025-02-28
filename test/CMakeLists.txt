@@ -5,7 +5,7 @@ project(test)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(CMAKE_CXX_FLAGS "-O3 -march=native -fopenmp -Wall -Wextra -pipe -fPIC -flto=auto -fvisibility=hidden -pthread -mavx -mavx2 -msse4.2 -mtune=native")
+set(CMAKE_CXX_FLAGS "-g -O3 -march=native -fopenmp -Wall -Wextra -pipe -fPIC -flto=auto -fvisibility=hidden -pthread -mavx -mavx2 -msse4.2 -mtune=native")
 
 find_package(Eigen3 REQUIRED)
 find_package(GTest REQUIRED)
