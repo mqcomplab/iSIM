@@ -104,31 +104,32 @@ def stratified_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, stra
 
     # Define the number of batches if not specified
     if not strata:
-        strata = int(n_objects*percentage/100)
-
-    # Split the data in batches
-    strata = np.array_split(indexes, strata)    
+        strata = int(n_objects*percentage/100) 
         
     # Define the total number of objects to sample and the number of objects to sample in each batch
     n_sample = int(n_objects*percentage/100)
 
     # Check if the number of objects to sample is not less than the number of batches
-    if n_sample < len(strata):
+    if n_sample < strata:
         raise ValueError("Warning: The number of objects to sample is too low for the number of batches, please specify a higher percentage, or a lower number of batches")
 
-    # Sample the objects in each batch
+
+    n_stratum = n_objects//strata # each stratum has at least n_stratum objects
+    rem_stratum = n_objects % strata # the first rem_stratum strata have n_stratum + 1 objects
+    n_choose = n_sample//strata # from each stratum we choose at least n_choose objects
+    rem_choose = n_sample % strata # the first rem_choose strata have n_choose + 1 objects
     sampled_indexes = []
-    i = 0
-    while len(sampled_indexes) < n_sample:
-        for stratum in strata:
-            if len(stratum) > i:
-                sampled_indexes.append(stratum[i])
-                if len(sampled_indexes) >= n_sample:
-                        break
-            else:
-                pass
-        i += 1    
-  
+    stratum_idx = 0 # index of the first object of the current stratum
+    for i in range(strata):
+        if i < rem_choose:
+            sampled_indexes.extend(indexes[stratum_idx:stratum_idx + n_choose + 1])
+        else:
+            sampled_indexes.extend(indexes[stratum_idx:stratum_idx + n_choose])
+        if i < rem_stratum:
+            stratum_idx += n_stratum + 1
+        else:
+            stratum_idx += n_stratum 
+
     return np.array(sampled_indexes)
 
 def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 10, hard_cap = True, comp_sim = None):
@@ -155,10 +156,9 @@ def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 
     else:
         comp_sim = comp_sim
         n_objects = len(comp_sim)
-    
     # Define the number of objetcs to sample
     n_sample = int(n_objects*percentage/100)
-    
+
     # Check if the number of objects to sample is not less than the number of bins
     if n_sample < 1 or n_sample < n_bins:
         raise ValueError("Warning: The number of objects to sample is too low for the number of bins, please specify a higher percentage, or a lower number of bins")
@@ -170,10 +170,9 @@ def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 
     # Divide the range of comp_sim values in n_bins
     D = max - min
     step = D/n_bins
-    
     # Separate the objects in bins
     bins = []
-
+ 
     indices = np.array(list(range(n_objects)))
     for i in range(n_bins - 1):
         low = min + i * step
@@ -184,7 +183,7 @@ def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 
     ind = indices[(comp_sim >= up) * (comp_sim <= max)]
     bin_comp_sim = comp_sim[ind]
     bins.append(ind[np.argsort(bin_comp_sim)])
-
+ 
     # Sample the objects from each bin
     order_sampled = []
     i = 0
