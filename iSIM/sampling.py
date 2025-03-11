@@ -159,9 +159,6 @@ def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 
     # Define the number of objetcs to sample
     n_sample = int(n_objects*percentage/100)
 
-    sorted_idx = np.argsort(comp_sim)
-    sorted_idx = sorted_idx.astype(int)
-    np.savetxt("sorted_idx.csv", sorted_idx, fmt='%i')
     # Check if the number of objects to sample is not less than the number of bins
     if n_sample < 1 or n_sample < n_bins:
         raise ValueError("Warning: The number of objects to sample is too low for the number of bins, please specify a higher percentage, or a lower number of bins")
@@ -175,9 +172,7 @@ def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 
     step = D/n_bins
     # Separate the objects in bins
     bins = []
-    print(min, max)
-    print(step)
-    print((max-min)/n_bins)
+ 
     indices = np.array(list(range(n_objects)))
     for i in range(n_bins - 1):
         low = min + i * step
@@ -188,9 +183,7 @@ def quota_sampling(fingerprints = None, n_ary = 'JT', percentage = 10, n_bins = 
     ind = indices[(comp_sim >= up) * (comp_sim <= max)]
     bin_comp_sim = comp_sim[ind]
     bins.append(ind[np.argsort(bin_comp_sim)])
-    for b in bins:
-        if len(b) > 0:
-            print(b[0])
+ 
     # Sample the objects from each bin
     order_sampled = []
     i = 0
