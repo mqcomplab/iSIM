@@ -6,8 +6,8 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/isim-{{ version }}.tar.gz
-  sha256: 7b174e3557db28846f3a033449b2d29a057f4c54457120a660946363065ae957
+  git_url: https://github.com/mqcomplab/iSIM.git
+  git_tag: 1.0.0
 
 build:
   noarch: python
@@ -16,14 +16,12 @@ build:
 
 requirements:
   host:
-    - python >=3.8,<4.0
+    - python {{ python_min }}
     - poetry >=0.12
     - poetry-core
     - pip
   run:
-    - python >=3.8.0,<4.0.0
-    - numpy >=1.20.0
-    - pandas >=1.2.0
+    - python >={{ python_min }}
 
 test:
   imports:
@@ -32,10 +30,11 @@ test:
     - pip check
   requires:
     - pip
+    - python {{ python_min }}
 
 about:
-  home: https://github.com/dalemyers/xcrun
-  summary: Python wrapper around the simctl utility
+  home: https://github.com/mqcomplab/iSIM
+  summary: Python package for calculating instant similarity
   license: MIT
   license_file: LICENSE.txt
 
