@@ -33,6 +33,6 @@ target_include_directories(iSIM
 )
 
 target_compile_options(iSIM PRIVATE
-    $<$<CONFIG:Release>:-march=native -fopenmp -Wall -Wextra -pipe -fPIC -flto=auto -fvisibility=hidden -pthread -mavx -mavx2 -msse4.2 -mtune=native>
+    $<$<CONFIG:Release>:-O3 -march=native -Wall -Wextra -fopenmp>
     $<$<CONFIG:Debug>:-O0 -g -Wall -Wextra -pipe -fPIC -fopenmp>
 )
