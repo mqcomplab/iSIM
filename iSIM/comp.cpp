@@ -6,6 +6,13 @@ Eigen::ArrayXf calculate_a(const Eigen::ArrayXf col_sum){
     return col_sum*(col_sum-1.0)/2.0;
 }
 
+/**
+ * @brief Calculates the pairwise average similarity.
+ * 
+ * @param fingerprints A 2D array of fingerprints (n_fps x n_features).
+ * @param n_ary The type of similarity metric to use. RR, JT, or SM.
+ * @return double The pairwise average similarity.
+ */
 double pairwise_average(const Eigen::ArrayXXf fingerprints, const std::string n_ary){
     double avg = 0;
     int n_objects = fingerprints.rows(); // num rows
@@ -18,6 +25,14 @@ double pairwise_average(const Eigen::ArrayXXf fingerprints, const std::string n_
     return avg/(n_objects*(n_objects-1.0)/2.0);
 }
 
+/**
+ * @brief Calculates various counters based on the column sum.
+ * 
+ * @param col_sum The column-wise sum of the data.
+ * @param n_objects The number of objects (rows).
+ * @param k The exponent used in the calculations.
+ * @return std::map<std::string, double> A map containing the calculated counters.
+ */
 std::map<std::string, double> calculate_counters(const Eigen::ArrayXf col_sum, 
 const int n_objects, const int k) { // data is column wise sum
     std::map<std::string, double> counters;
@@ -39,6 +54,13 @@ const int n_objects, const int k) { // data is column wise sum
     return counters;
 }
 
+/**
+ * @brief Calculates various counters based on the data.
+ * 
+ * @param data A 2D array of fingerprints (n_fps x n_features).
+ * @param k The exponent used in the calculations.
+ * @return std::map<std::string, double> A map containing the calculated counters.
+ */
  std::map<std::string, double> calculate_counters( const Eigen::ArrayXXf data,
  const int k){ // array of arrays sub array contains binary object
     int n_objects = data.rows(); // num rows
@@ -46,6 +68,14 @@ const int n_objects, const int k) { // data is column wise sum
     return calculate_counters(col_sum, n_objects, k);
 }
 
+/**
+ * @brief Calculates the instant similarity value based on the column sum.
+ * 
+ * @param col_sum The column-wise sum of the data.
+ * @param n_objects The number of objects (rows).
+ * @param n_ary The type of similarity metric to use. RR, JT, or SM.
+ * @return double The calculated iSIM value.
+ */
 double calculate_isim(const Eigen::ArrayXf col_sum, 
                      const int n_objects, std::string n_ary){
     if (n_ary == "RR"){
@@ -72,6 +102,13 @@ double calculate_isim(const Eigen::ArrayXf col_sum,
 
 }
 
+/**
+ * @brief Calculates the instant similarity value based on the column sum.
+ * 
+ * @param data  A 2D Eigen::ArrayXXf of fingerprints (n_fps x n_features).
+ * @param n_ary The type of similarity metric to use. RR, JT, or SM.
+ * @return double The calculated iSIM value.
+ */
 double calculate_isim(const Eigen::ArrayXXf data, std::string n_ary){
     int n_objects = data.rows(); // num rows
     Eigen::ArrayXf col_sum = data.colwise().sum();
@@ -80,6 +117,15 @@ double calculate_isim(const Eigen::ArrayXXf data, std::string n_ary){
 }
 
 
+/**
+ * @brief Calculate the complementary similarity matrix based on the given data and method.
+ * 
+ * @param data A 2D Eigen::ArrayXXf of fingerprints (n_fps x n_features).
+ * @param n_ary The type of similarity metric to use. RR, JT, or SM.
+ * @return Eigen::ArrayXd The competition similarity vector calculated based on the specified method.
+ * 
+ * @throws std::invalid_argument If an invalid `n_ary` value is provided.
+ */
 Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string n_ary){
     int n_objects = data.rows() - 1; 
     Eigen::ArrayXd col_sum = data.cast<double>().colwise().sum();
@@ -106,6 +152,13 @@ Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string
         throw std::invalid_argument("Invalid n_ary value.");
 }
 
+/**
+ * @brief Calculate the medoid of the given data based on the specified similarity metric.
+ * 
+ * @param data A 2D Eigen::ArrayXXf of fingerprints (n_fps x n_features).
+ * @param n_ary The type of similarity metric to use. RR, JT, or SM.
+ * @return int The index of the medoid in the data.
+ */
 int calculate_medoid(const Eigen::ArrayXXf data, const std::string n_ary){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(data, n_ary);
     int pos;
@@ -113,6 +166,13 @@ int calculate_medoid(const Eigen::ArrayXXf data, const std::string n_ary){
     return pos;
 }
 
+/**
+ * @brief Calculate the outlier of the given data based on the specified similarity metric.
+ * 
+ * @param data A 2D Eigen::ArrayXXf of fingerprints (n_fps x n_features).
+ * @param n_ary The type of similarity metric to use. RR, JT, or SM.
+ * @return int The index of the outlier in the data.
+ */
 int calculate_outlier(const Eigen::ArrayXXf data, const std::string n_ary){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(data, n_ary);
     int pos;
@@ -120,7 +180,18 @@ int calculate_outlier(const Eigen::ArrayXXf data, const std::string n_ary){
     return pos;
 }
 
-
+/**
+ * @brief Generates a dictionary of similarity metrics based on the column sum.
+ * 
+ * This function calculates various similarity metrics using the provided column sum,
+ * number of objects, and exponent. The metrics are stored in a map with their respective
+ * names as keys.
+ * 
+ * @param col_sum The column-wise sum of the data.
+ * @param n_objects The number of objects (rows).
+ * @param k The exponent used in the calculations.
+ * @return std::map<std::string, double> A map containing the calculated similarity metrics.
+ */
 std::map<std::string, double> gen_sim_dict(const Eigen::ArrayXf col_sum,
 const int n_objects, const int k){
     std::map<std::string, double> counters = calculate_counters(col_sum, n_objects, k);
@@ -140,6 +211,13 @@ const int n_objects, const int k){
     return sim_dict;
 }
 
+/**
+ * @brief Generates a dictionary of similarity metrics based on the data.
+ * 
+ * @param data A 2D Eigen::ArrayXXf of fingerprints (n_fps x n_features).
+ * @param k The exponent used in the calculations.
+ * @return std::map<std::string, double> A map containing the calculated similarity metrics.
+ */
 std::map<std::string, double> gen_sim_dict(const Eigen::ArrayXXf data, 
 const int k){
     int n_objects = data.rows(); // num rows
