@@ -1,7 +1,27 @@
+/**
+ * @class HierarchicalClustering
+ * @brief A class for performing hierarchical clustering on binary fingerprints.
+ *
+ * This class implements a hierarchical clustering algorithm using a bottom-up approach.
+ * It takes a 2D Eigen Array of molecular fingerprints as input, where each row corresponds
+ * to one molecule. The clustering process combines the most similar clusters iteratively
+ * until a single cluster remains.
+ *
+ * @details
+ * The class maintains a list of hierarchical clustering trees (HCTree) and a linkage matrix (Z).
+ * The linkage matrix stores information about the clustering process, including the indices
+ * of the merged clusters, the iteration at which they were merged, and the number of objects
+ * in the resulting cluster.
+ */
+
 #include "clustering.h"
 
+/**
+ * @brief Constructor for the HierarchicalClustering class.
+ * 
+ * @param fps A 2D Eigen Array of molecular fingerprints, where each row corresponds to one molecule.
+ */
 HierarchicalClustering::HierarchicalClustering(Eigen::ArrayXXf fps){
-    // fingerprints must be a 2D Eigen Array, where each row corresponds to one molecule. 
 
     std::vector<HCTree> leaf_list= {};
     current_ind = 0;
@@ -18,19 +38,39 @@ HierarchicalClustering::HierarchicalClustering(Eigen::ArrayXXf fps){
     setTreeList(leaf_list);
 }
 
+/**
+ * @brief Get the linkage matrix Z.
+ * 
+ * @return Eigen::ArrayXXf The linkage matrix containing information about the clustering process.
+ */
 Eigen::ArrayXXf HierarchicalClustering::getZ(){
     return Z;
 }
 
-
+/**
+ * @brief Set the tree list. 
+ * 
+ * @param tree_lst A vector of HCTree objects representing the current state of the clustering trees.
+ */
 void HierarchicalClustering::setTreeList(std::vector<HCTree> tree_lst){
     tree_list = tree_lst;
 }
 
+/**
+ * @brief Get the current list of hierarchical clustering trees.
+ * 
+ * @return std::vector<HCTree> A vector of HCTree objects representing the current state of the clustering trees.
+ */
 std::vector<HCTree> HierarchicalClustering::getTreeList(){
     return tree_list;
 }
 
+/**
+ * @brief Find the indices of the two most similar clusters based on their similarity score.
+ * 
+ * @param n_ary A string representing the n-ary type for similarity calculation. RR, JT, or SM. 
+ * @return std::vector<int> A vector containing the indices of the two most similar clusters.
+ */
 std::vector<int> HierarchicalClustering::maxIndices(std::string n_ary){
     double max_sim = -3.08;
     int max1 = -1;
@@ -53,6 +93,13 @@ std::vector<int> HierarchicalClustering::maxIndices(std::string n_ary){
     return {max1, max2};
 }
 
+/**
+ * @brief Perform hierarchical clustering on the molecular fingerprints.
+ * @note Currently there is no support for rerunning the clustering with a different n-ary type.
+ * 
+ * @param n_ary A string representing the n-ary type for similarity calculation. RR, JT, or SM. 
+ * @return HCTree The final hierarchical clustering tree after all merges.
+ */
 HCTree HierarchicalClustering::runClustering(std::string n_ary){
     int N = getTreeList().size()-1;
     if (N<1){
