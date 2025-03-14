@@ -1,5 +1,11 @@
 #include "sampling.h"
 
+/**
+ * @brief Calculates the sorted indices of an Eigen::ArrayXd based on its values.
+ * 
+ * @param array The Eigen::ArrayXd to be sorted.
+ * @return A vector of indices that represent the sorted order of the array.
+ */
 std::vector<int> getSortedIndices(const Eigen::ArrayXd& array) {
     std::vector<int> indices(array.size());
     for (u_int i = 0; i < indices.size(); ++i) {
@@ -11,6 +17,13 @@ std::vector<int> getSortedIndices(const Eigen::ArrayXd& array) {
     return indices;
 }
 
+/**
+ * @brief Performs medoid sampling on the fingerprints based on the specified n-ary and percentage.
+ * @param fps The fingerprints as an Eigen::ArrayXXf.
+ * @param n_ary The n-ary value to be used for calculating the similarity. RR, JT, or SM.
+ * @param percentage The percentage of the total number of fingerprints to sample.
+ * @return A vector of indices representing the sampled fingerprints.
+ */
 std::vector<int> medoid_sampling(Eigen::ArrayXXf fps, std::string n_ary, double percentage){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(fps, n_ary);
     std::vector<int> sorted_ind = getSortedIndices(comp_sims);
@@ -20,6 +33,13 @@ std::vector<int> medoid_sampling(Eigen::ArrayXXf fps, std::string n_ary, double 
     return chosen_ind;
 }
 
+/**
+ * @brief Performs outlier sampling on the fingerprints based on the specified n-ary and percentage.
+ * @param fps The fingerprints as an Eigen::ArrayXXf.
+ * @param n_ary The n-ary value to be used for calculating the similarity. RR, JT, or SM.
+ * @param percentage The percentage of the total number of fingerprints to sample.
+ * @return A vector of indices representing the sampled fingerprints.
+ */
 std::vector<int> outlier_sampling(Eigen::ArrayXXf fps, std::string n_ary, double percentage){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(fps, n_ary);
     std::vector<int> sorted_ind = getSortedIndices(comp_sims);
@@ -29,6 +49,13 @@ std::vector<int> outlier_sampling(Eigen::ArrayXXf fps, std::string n_ary, double
     return chosen_ind;
 }
 
+/**
+ * @brief Performs extremes sampling on the fingerprints based on the specified n-ary and percentage.
+ * @param fps The fingerprints as an Eigen::ArrayXXf.
+ * @param n_ary The n-ary value to be used for calculating the similarity. RR, JT, or SM.
+ * @param percentage The percentage of the total number of fingerprints to sample.
+ * @return A vector of indices representing the sampled fingerprints.
+ */
 std::vector<int> extremes_sampling(Eigen::ArrayXXf fps, std::string n_ary, double percentage){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(fps, n_ary);
     std::vector<int> sorted_ind = getSortedIndices(comp_sims);
@@ -41,6 +68,14 @@ std::vector<int> extremes_sampling(Eigen::ArrayXXf fps, std::string n_ary, doubl
     return chosen_ind;
 }
 
+/**
+ * @brief Performs stratified sampling on the fingerprints based on the specified n-ary, percentage, and number of strata.
+ * @param fps The fingerprints as an Eigen::ArrayXXf.
+ * @param n_ary The n-ary value to be used for calculating the similarity. RR, JT, or SM.
+ * @param percentage The percentage of the total number of fingerprints to sample.
+ * @param strata The number of strata to divide the fingerprints into.
+ * @return A vector of indices representing the sampled fingerprints.
+ */
 std::vector<int> stratified_sampling(Eigen::ArrayXXf fps, std::string n_ary, double percentage, int strata){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(fps, n_ary);
     std::vector<int> sorted_ind = getSortedIndices(comp_sims);
@@ -64,7 +99,6 @@ std::vector<int> stratified_sampling(Eigen::ArrayXXf fps, std::string n_ary, dou
             std::vector<int> chosen_idx_stratum(sorted_ind.begin()+stratum_idx, sorted_ind.begin() + stratum_idx + n_choose);
             chosen_ind.insert(chosen_ind.end(), chosen_idx_stratum.begin(), chosen_idx_stratum.end());
         }
-        // append chosen elements
         
         // update start index of stratum
         if (i < rem_stratum){
@@ -77,6 +111,14 @@ std::vector<int> stratified_sampling(Eigen::ArrayXXf fps, std::string n_ary, dou
     return chosen_ind;
 }
 
+/**
+ * @brief Performs quota sampling on the fingerprints based on the specified n-ary, percentage, and number of bins.
+ * @param fps The fingerprints as an Eigen::ArrayXXf.
+ * @param n_ary The n-ary value to be used for calculating the similarity. RR, JT, or SM.
+ * @param percentage The percentage of the total number of fingerprints to sample.
+ * @param n_bins The number of bins to divide the fingerprints into.
+ * @return A vector of indices representing the sampled fingerprints.
+ */
 std::vector<int> quota_sampling(Eigen::ArrayXXf fps, std::string n_ary, double percentage, int n_bins){
     Eigen::ArrayXd comp_sims = calculate_comp_sim(fps, n_ary);
     std::vector<int> sorted_ind = getSortedIndices(comp_sims);
