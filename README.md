@@ -11,33 +11,66 @@ Curated CHEMBL datasets were retrieved from:
 https://github.com/molML/MoleculeACE/blob/main/MoleculeACE/Data/benchmark_data/old/
 """Exposing the Limitations of Molecular Machine Learning with Activity Cliffs. Derek van Tilborg, Alisa Alenicheva, and Francesca Grisoni. Journal of Chemical Information and Modeling, 2022, 62 (23), 5938-5951. DOI: 10.1021/acs.jcim.2c01073"""
 
-### To install: 
-`git clone git@github.com:mqcomplab/iSIM.git`
+## Prerequisites
 
-`pip install -e .`
-### Prerequisites
-iSIM current supports Python 3.10. 
+Before building and running the project, ensure the following dependencies are installed:
 
-For iSIM functions:
+- **CMake** (version 3.9 or higher)
+- **GCC** or **Clang** (C++17 compatible compiler)
+- **Git** (to clone the repository)
+- **Eigen3** (see [getting started website](https://eigen.tuxfamily.org/dox/GettingStarted.html))
 
-numpy (1.24.2)
+To install these dependencies on Ubuntu, you can use:
 
-For plots and analysis (notebooks):
+```bash
+$ sudo apt update
+$ sudo apt install cmake g++ python3 git
+```
 
-matplotlib (3.7.3)
+For other operating systems, refer to their respective package managers or installation guides.
 
-pandas (2.0.2)
+## Installation
+Clone the repository:
+```bash
+git clone https://github.com/your-repo/isim.git
+cd isim
+```
 
-random 
+Create directory for build:
 
-rdkit (2023.03.1)
+`$ mkdir build `
 
-scipy (1.10.1)
+`$ cd build`
 
-seaborn (0.12.2)
+The project supports two build types: **Release** and **Debug**. By default, the build type is set to **Release**.
 
-sklearn (1.3.1)
+- To configure a **Release** build, use:
 
-### Funding
-Research contained in this package was supported by the National Institute of General Medical Sciences of the National Institutes  of  Health  under  award  number  R35GM150620. 
+    `$ cmake -DCMAKE_BUILD_TYPE=Release .. `
 
+    or simply:
+    
+    `$ cmake ..`
+
+- To configure a **Debug** build, use:
+
+    `$ cmake -DCMAKE_BUILD_TYPE=Debug ..`
+
+Then compile the project with:
+
+`$ make` 
+
+After building, the binaries will be available in the `build` directory.
+
+## Testing and Examples
+
+Please refer to the `tests` directory for unit tests for the iSIM module. The tests ensure that the implementation is correct and that the results are consistent with expected outputs.
+
+The `examples` directory contains example scripts demonstrating how to use the iSIM module for various applications, such as sampling, diversity selection, and clustering.
+
+## Funding
+Research contained in this package was supported by the National Institute of General Medical Sciences of the National Institutes  of  Health  under  award  number  R35GM150620.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
