@@ -1,5 +1,15 @@
 #include "div.h"
 
+/**
+ * @brief Get the index of the new fingerprint to be added to the selected fingerprints.
+ * 
+ * @param total_data A 2D Eigen Array containing all the fingerprints.
+ * @param selected_condensed A 1D Eigen Array containing the columnwise sum of the selected fingerprints.
+ * @param n The current number of selected fingerprints.
+ * @param select_from_n A vector of indices representing the fingerprints that can be selected from.
+ * @param n_ary A string representing the n-ary type for similarity calculation. RR, JT, or SM.
+ * @return int The index of the new fingerprint to be added to the selected fingerprints.
+ */
 int get_new_index_n(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_condensed, int n, std::vector<int> select_from_n, std::string n_ary){
     int index = total_data.rows();
     double min_value = 3.08;
@@ -17,6 +27,17 @@ int get_new_index_n(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_condense
     return index;
 }
 
+/**
+ * @brief Get the index of the new fingerprint to be added to the selected fingerprints using a root method.
+ * 
+ * @param total_data A 2D Eigen Array containing all the fingerprints.
+ * @param selected_condensed A 1D Eigen Array containing the columnwise sum of the selected fingerprints.
+ * @param n The current number of selected fingerprints.
+ * @param k The kth root to be used for similarity calculation.
+ * @param select_from_n A vector of indices representing the fingerprints that can be selected from.
+ * @param n_ary A string representing the n-ary type for similarity calculation. RR, JT, or SM.
+ * @return int The index of the new fingerprint to be added to the selected fingerprints.
+ */
 int get_new_index_sqrt(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_condensed, int n, int k, std::vector<int> select_from_n, std::string n_ary){
     int index = total_data.rows();
     double min_value = 3.08;
@@ -32,6 +53,16 @@ int get_new_index_sqrt(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_conde
     return index;
 }
 
+/**
+ * @brief Get the index of the new fingerprint to be removed from the selected fingerprints.
+ * 
+ * @param total_data A 2D Eigen Array containing all the fingerprints.
+ * @param selected_condensed A 1D Eigen Array containing the columnwise sum of the selected fingerprints.
+ * @param n The current number of selected fingerprints.
+ * @param select_from_n A vector of indices representing the fingerprints that can be selected from.
+ * @param n_ary A string representing the n-ary type for similarity calculation. RR, JT, or SM.
+ * @return int The index of the new fingerprint to be removed from the selected fingerprints.
+ */
 int get_new_index_reverse(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_condensed, int n, std::vector<int> select_from_n, std::string n_ary){
     int index = total_data.rows();
     double min_value = 3.08;
@@ -47,6 +78,15 @@ int get_new_index_reverse(Eigen::ArrayXXf total_data, Eigen::ArrayXf selected_co
     return index;
 }
 
+/**
+ * @brief Get the index of the new fingerprint to be added to the selected fingerprints using a bmax method.
+ * 
+ * @param total_data A 2D Eigen Array containing all the fingerprints.
+ * @param selected_b A vector of indices representing the currently selected fingerprints.
+ * @param select_from_b A vector of indices representing the fingerprints that can be selected from.
+ * @param n_ary A string representing the n-ary type for similarity calculation. RR, JT, or SM.
+ * @return int The index of the new fingerprint to be added to the selected fingerprints.
+ */
 int get_new_indices_b_max(Eigen::ArrayXXf total_data, std::vector<int> selected_b, std::vector<int> select_from_b, std::string n_ary){
     double min_sim = 3.08;
     int idx = -1;
@@ -72,6 +112,16 @@ int get_new_indices_b_max(Eigen::ArrayXXf total_data, std::vector<int> selected_
     return idx;
 }
 
+/**
+ * @brief Select a subset of fingerprints from the total data based on diversity method.
+ * @param data A 2D Eigen Array containing all the fingerprints.
+ * @param percentage A double representing the percentage of fingerprints to select.
+ * @param start A string representing the starting point for selection. Options are "medoid", "random", or "outlier".
+ * @param n_ary A string representing the n-ary type for similarity calculation. Options are "RR", "JT", or "SM".
+ * @param method A string representing the method for selection. Options are "isim", "bmax", or "power".
+ * @param k An integer representing the kth root to be used for similarity calculation (only relevant for "power" method).
+ * @return std::vector<int> A vector of indices representing the selected fingerprints after diversity selection.
+ */
 std::vector<int> diversity(Eigen::ArrayXXf data, double percentage, std::string start, std::string n_ary, std::string method, int k){
     int n_total = data.rows();
     std::vector<int> select_from_n(n_total);
@@ -121,6 +171,13 @@ std::vector<int> diversity(Eigen::ArrayXXf data, double percentage, std::string 
     return selected_n;
 }
 
+/**
+ * @brief Select a subset of fingerprints from the total data based on reverse diversity method.
+ * @param data A 2D Eigen Array containing all the fingerprints.
+ * @param percentage A double representing the percentage of fingerprints to deselect.
+ * @param n_ary A string representing the n-ary type for similarity calculation. Options are "RR", "JT", or "SM".
+ * @return std::vector<int> A vector of indices representing the selected fingerprints after reverse diversity.
+ */
 std::vector<int> reverse_diversity(Eigen::ArrayXXf data, double percentage, std::string n_ary){
     int n_total = data.rows();
     std::vector<int> select_from_n(n_total);
