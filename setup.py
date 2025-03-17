@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.1'
+VERSION = '15.0.0'
 
 DESCRIPTION = 'Module to perform instant similarity (iSIM), which allows for comparison of multiple molecules at the same time, yielding the same value as the average pairwise comparisons of other methods.'
 
