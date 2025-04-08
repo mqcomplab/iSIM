@@ -23,6 +23,12 @@ Then, we recommend installing isim through conda forge.
 conda install -c conda-forge isim
 ```
 
+To test if the installation was successful, run the following command in a terminal:
+```
+python -c "import isim"
+```
+If you see no error messages, the installation was successful.
+
 ### Developer Installation (SSH)
 `git clone git@github.com:mqcomplab/iSIM.git`
 
