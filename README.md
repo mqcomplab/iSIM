@@ -13,22 +13,14 @@ https://github.com/molML/MoleculeACE/blob/main/MoleculeACE/Data/benchmark_data/o
 
 ### Installation
 
-Installing isim from the conda-forge channel can be achieved by adding conda-forge to your channels with:
-
-```bash
-conda config --add channels conda-forge
-conda config --set channel_priority strict
+Before installing isim, we recommend you to first install the Python 3 version provided by the latest free Anaconda Python distribution. After installing Anaconda, create a new python environment for the isim install with the following:
 ```
-
-Once the conda-forge channel has been enabled, isim can be installed with conda:
-
-```bash
-conda install isim
+conda create -n isim python=3.11
+conda activate isim
 ```
-or with mamba:
-
-```bash
-mamba install isim
+Then, we recommend installing isim through conda forge.
+```
+conda install -c conda-forge isim
 ```
 
 ### Developer Installation (SSH)
