@@ -25,7 +25,7 @@ conda install -c conda-forge isim
 
 To test if the installation was successful, run the following command in a terminal:
 ```
-python -c "import isim"
+python -c "import iSIM"
 ```
 If you see no error messages, the installation was successful.
 
