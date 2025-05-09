@@ -79,20 +79,20 @@ const int n_objects, const int k) { // data is column wise sum
 double calculate_isim(const Eigen::ArrayXf col_sum, 
                      const int n_objects, std::string n_ary){
     if (n_ary == "RR"){
-        double a = (col_sum*(col_sum-1.0)*0.5).sum();
+        double a = (col_sum.cast<double>()*(col_sum.cast<double>()-1.0)*0.5).sum();
         double p = n_objects*(n_objects-1.0)*col_sum.size()*0.5;
         return a/p;
     }
     else if(n_ary == "JT"){
-        double a = (col_sum*(col_sum-1.0)/2.0).sum();
+        double a = (col_sum.cast<double>()*(col_sum.cast<double>()-1.0)*0.5).sum();
         Eigen::ArrayXf off_coincidence = n_objects - col_sum;
-        double total_dis = (off_coincidence*col_sum).sum();
+        double total_dis = (off_coincidence.cast<double>()*col_sum.cast<double>()).sum();
         return a/(a+total_dis);
     }
     else if(n_ary == "SM"){
-        double a = (col_sum*(col_sum-1.0)/2.0).sum();
+        double a = (col_sum.cast<double>()*(col_sum.cast<double>()-1.0)*0.5).sum();
         Eigen::ArrayXf off_coincidence = n_objects - col_sum;
-        double d = (off_coincidence*(off_coincidence-1.0)/2.0).sum();
+        double d = (off_coincidence.cast<double>()*(off_coincidence.cast<double>()-1.0)/2.0).sum();
         double p = n_objects*(n_objects-1.0)*col_sum.size()/2.0;
         return (a+d)/p;
     }
@@ -135,7 +135,7 @@ Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string
     for (int i = 0; i < n_objects; i++){
         Eigen::ArrayXf current_row = data.row(i); // note: this needs to be declared here so that col_sum_current is also a vector of lenght n_features
         Eigen::ArrayXf col_sum_current = col_sum - current_row;
-        comp_sims(i) = calculate_isim(col_sum_current.cast<float>(), remaining_objects, n_ary);
+        comp_sims(i) = calculate_isim(col_sum_current, remaining_objects, n_ary);
     }
     return comp_sims;
 }
