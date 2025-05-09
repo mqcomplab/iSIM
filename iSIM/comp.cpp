@@ -127,29 +127,17 @@ double calculate_isim(const Eigen::ArrayXXf data, std::string n_ary){
  * @throws std::invalid_argument If an invalid `n_ary` value is provided.
  */
 Eigen::ArrayXd calculate_comp_sim(const  Eigen::ArrayXXf data, const std::string n_ary){
-    int n_objects = data.rows() - 1; 
-    Eigen::ArrayXd col_sum = data.cast<double>().colwise().sum();
-    Eigen::ArrayXXd col_sum_m = col_sum.transpose().replicate(n_objects+1, 1);
-    Eigen::ArrayXXd comp_matrix = col_sum_m - data.cast<double>();
-    Eigen::ArrayXXd a = comp_matrix*(comp_matrix-1.0)/2.0;
-    int m = data.cols();
-    
-    if (n_ary == "RR"){
-        Eigen::ArrayXd comp_sim = a.rowwise().sum()/(m * n_objects * (n_objects-1.0)/2.0);
-        return comp_sim;
+    int n_objects = data.rows();
+    int remaining_objects = n_objects - 1;
+    Eigen::ArrayXf col_sum = data.colwise().sum();
+    Eigen::ArrayXd comp_sims(n_objects);
+    #pragma omp parallel for
+    for (int i = 0; i < n_objects; i++){
+        Eigen::ArrayXf current_row = data.row(i); // note: this needs to be declared here so that col_sum_current is also a vector of lenght n_features
+        Eigen::ArrayXf col_sum_current = col_sum - current_row;
+        comp_sims(i) = calculate_isim(col_sum_current.cast<float>(), remaining_objects, n_ary);
     }
-    else if (n_ary == "JT"){
-        Eigen::ArrayXd comp_sims = a.rowwise().sum();
-        comp_sims /= ((a+ comp_matrix*(n_objects - comp_matrix)).rowwise().sum());
-        return comp_sims;
-    }
-    else if (n_ary == "SM"){
-        Eigen::ArrayXd comp_sims = (a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1.0)/2.0).rowwise().sum();
-        comp_sims /= (m * n_objects * (n_objects - 1.0)/2.0);
-        return comp_sims;
-    }
-    else
-        throw std::invalid_argument("Invalid n_ary value.");
+    return comp_sims;
 }
 
 /**
