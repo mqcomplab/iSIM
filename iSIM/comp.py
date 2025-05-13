@@ -189,6 +189,7 @@ def calculate_medoid(data, n_ary = 'RR'):
 def calculate_outlier(data, n_ary = 'RR'):
     return np.argmax(calculate_comp_sim(data, n_ary = n_ary))
 
+
 def calculate_comp_sim(data, n_ary = 'RR'):
     """Calculate the complementary similarity for RR, JT, or SM
 
@@ -228,4 +229,10 @@ def calculate_comp_sim(data, n_ary = 'RR'):
     elif n_ary == 'SM':
         comp_sims = np.sum((a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1)/2), axis = 1)/(m * n_objects * (n_objects - 1)/2)
     
+    return comp_sims
+
+def calculate_comp_sim_new(data, n_ary = "RR"):
+    colsum = np.sum(data, axis = 0)
+    n_objects = len(data) - 1   
+    comp_sims = [calculate_isim(colsum - data[i], n_objects = n_objects, n_ary = n_ary) for i in range(len(data))]
     return comp_sims
