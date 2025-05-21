@@ -211,28 +211,8 @@ def calculate_comp_sim(data, n_ary = 'RR'):
         1D array with the complementary similarities of all the molecules in the set.
     """
     
-    n_objects = len(data) - 1
-    
-    c_total = np.sum(data, axis = 0)
-    m = len(c_total)
-    
-    comp_matrix = c_total - data
-    
-    a = comp_matrix * (comp_matrix - 1)/2
-    
-    if n_ary == 'RR':
-        comp_sims = np.sum(a, axis = 1)/(m * n_objects * (n_objects - 1)/2)
-    
-    elif n_ary == 'JT':
-        comp_sims = np.sum(a, axis = 1)/np.sum((a + comp_matrix * (n_objects - comp_matrix)), axis = 1)
-    
-    elif n_ary == 'SM':
-        comp_sims = np.sum((a + (n_objects - comp_matrix) * (n_objects - comp_matrix - 1)/2), axis = 1)/(m * n_objects * (n_objects - 1)/2)
-    
-    return comp_sims
-
-def calculate_comp_sim_new(data, n_ary = "RR"):
     colsum = np.sum(data, axis = 0)
     n_objects = len(data) - 1   
     comp_sims = [calculate_isim(colsum - data[i], n_objects = n_objects, n_ary = n_ary) for i in range(len(data))]
+    
     return comp_sims
