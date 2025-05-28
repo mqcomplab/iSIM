@@ -49,7 +49,6 @@ Warning: No fingerprints provided.
 
 ## Known Issues
 
-* Complementary similarity for real fingerprints has float precision instead of double, so this test fails
 * The selected indices for the sampling and diversity methods are ordered differently in C++.
  However, this is not an issue as the same indices are being selected, just in a different sequence.
 
