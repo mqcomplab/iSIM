@@ -28,9 +28,9 @@ TEST_F(testIsim, test_calculate_isim_real){
 }
 
 TEST_F(testIsim, test_calculate_compsim_real){
-    Eigen::ArrayXd comp_sim_rr = calculate_comp_sim_real(fps, "RR").cast<double>();
-    Eigen::ArrayXd comp_sim_jt = calculate_comp_sim_real(fps, "JT").cast<double>();
-    Eigen::ArrayXd comp_sim_sm = calculate_comp_sim_real(fps, "SM").cast<double>();
+    Eigen::ArrayXd comp_sim_rr = calculate_comp_sim_real(fps, "RR");
+    Eigen::ArrayXd comp_sim_jt = calculate_comp_sim_real(fps, "JT");
+    Eigen::ArrayXd comp_sim_sm = calculate_comp_sim_real(fps, "SM");
     Eigen::ArrayXd comp_sim_rr_expected = read_compsim("../python_results/compsim_chembl214_1000_rows_RR_real.csv");
     Eigen::ArrayXd comp_sim_jt_expected = read_compsim("../python_results/compsim_chembl214_1000_rows_JT_real.csv");
     Eigen::ArrayXd comp_sim_sm_expected = read_compsim("../python_results/compsim_chembl214_1000_rows_SM_real.csv");
