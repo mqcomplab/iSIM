@@ -67,8 +67,8 @@ double pairwise_average_real(const Eigen::ArrayXXf fingerprints, std::string n_a
  * @param data A 2D Eigen Array containing the matrix data.
  * @return An Eigen::ArrayXf containing the sum of each column.
  */
-Eigen::ArrayXf process_matrix_data_sum(const Eigen::ArrayXXf data){
-    return data.colwise().sum();
+Eigen::ArrayXd process_matrix_data_sum(const Eigen::ArrayXXf data){
+    return data.cast<double>().colwise().sum();
 }
 
 /**
@@ -76,8 +76,8 @@ Eigen::ArrayXf process_matrix_data_sum(const Eigen::ArrayXXf data){
  * @param data A 2D Eigen Array containing the matrix data.
  * @return An Eigen::ArrayXf containing the sum of the square of each column.
  */
-Eigen::ArrayXf process_matrix_sq_data_sum(const Eigen::ArrayXXf data){
-    return data.square().colwise().sum();
+Eigen::ArrayXd process_matrix_sq_data_sum(const Eigen::ArrayXXf data){
+    return data.cast<double>().square().colwise().sum();
 }
 
 /**
@@ -108,7 +108,7 @@ double calculate_isim_real(const Eigen::ArrayXXf fingerprints, std::string n_ary
     }
     else if (n_ary == "JT"){
         int n_objects = fingerprints.rows();
-        Eigen::ArrayXf sq_sum = process_matrix_sq_data_sum(fingerprints);
+        Eigen::ArrayXd sq_sum = process_matrix_sq_data_sum(fingerprints);
         double ij = process_matrix_ij(fingerprints);
         double inners = (n_objects-1)*sq_sum.sum();
         return ij/(inners-ij);
@@ -132,13 +132,13 @@ double calculate_isim_real(const Eigen::ArrayXXf fingerprints, std::string n_ary
  * @param fingerprints A 2D Eigen Array containing the fingerprints.
  * @return An Eigen::ArrayXf containing the complementary similarity for all fingerprints.
  */
-Eigen::ArrayXf comp_sim_rr(const Eigen::ArrayXXf fingerprints){
+Eigen::ArrayXd comp_sim_rr(const Eigen::ArrayXXf fingerprints){
     int n_objects = fingerprints.rows() - 1;
-    Eigen::ArrayXf sum_sq = process_matrix_sq_data_sum(fingerprints);
-    Eigen::ArrayXf col_sum = process_matrix_data_sum(fingerprints);
-    Eigen::ArrayXf comp_sq_sum = (col_sum.transpose().replicate(n_objects+1, 1) - fingerprints).square().rowwise().sum();
-    Eigen::ArrayXf comp_sum_sq = (sum_sq.transpose().replicate(n_objects+1, 1) - fingerprints.square()).rowwise().sum();
-    Eigen::ArrayXf comp_sim = (comp_sq_sum - comp_sum_sq)/(fingerprints.cols() * n_objects * (n_objects-1.0));
+    Eigen::ArrayXd sum_sq = process_matrix_sq_data_sum(fingerprints);
+    Eigen::ArrayXd col_sum = process_matrix_data_sum(fingerprints);
+    Eigen::ArrayXd comp_sq_sum = (col_sum.transpose().replicate(n_objects+1, 1) - fingerprints.cast<double>()).square().rowwise().sum();
+    Eigen::ArrayXd comp_sum_sq = (sum_sq.transpose().replicate(n_objects+1, 1) - fingerprints.cast<double>().square()).rowwise().sum();
+    Eigen::ArrayXd comp_sim = (comp_sq_sum - comp_sum_sq)/(fingerprints.cols() * n_objects * (n_objects-1.0));
     return comp_sim;
 }
 
@@ -147,22 +147,22 @@ Eigen::ArrayXf comp_sim_rr(const Eigen::ArrayXXf fingerprints){
  * @param fingerprints A 2D Eigen Array containing the fingerprints.
  * @return An Eigen::ArrayXf containing the complementary similarity for all fingerprints.
  */
-Eigen::ArrayXf comp_sim_sm(const Eigen::ArrayXXf fingerprints){
+Eigen::ArrayXd comp_sim_sm(const Eigen::ArrayXXf fingerprints){
     int n = fingerprints.rows()-1;
     Eigen::ArrayXXf had_matrix = fingerprints.square();
     Eigen::ArrayXXf flip_matrix = 1 - fingerprints;
     Eigen::ArrayXXf had_flip = flip_matrix.square();
-    Eigen::ArrayXf col_sum = process_matrix_data_sum(fingerprints);
-    Eigen::ArrayXf had_sum = process_matrix_data_sum(had_matrix);
-    Eigen::ArrayXf flip_sum = process_matrix_data_sum(flip_matrix);
-    Eigen::ArrayXf had_flip_sum = process_matrix_data_sum(had_flip);
+    Eigen::ArrayXd col_sum = process_matrix_data_sum(fingerprints);
+    Eigen::ArrayXd had_sum = process_matrix_data_sum(had_matrix);
+    Eigen::ArrayXd flip_sum = process_matrix_data_sum(flip_matrix);
+    Eigen::ArrayXd had_flip_sum = process_matrix_data_sum(had_flip);
 
-    Eigen::ArrayXf comp_sq_sum = (col_sum.transpose().replicate(n+1, 1) - fingerprints).square().rowwise().sum();
-    Eigen::ArrayXf comp_sum_sq = (had_sum.transpose().replicate(n+1, 1) - had_matrix).rowwise().sum();
-    Eigen::ArrayXf comp_flip_sq_sum = (flip_sum.transpose().replicate(n+1, 1) - flip_matrix).square().rowwise().sum();
-    Eigen::ArrayXf comp_flip_sum_sq = (had_flip_sum.transpose().replicate(n+1, 1) - had_flip).rowwise().sum();
+    Eigen::ArrayXd comp_sq_sum = (col_sum.transpose().replicate(n+1, 1) - fingerprints.cast<double>()).square().rowwise().sum();
+    Eigen::ArrayXd comp_sum_sq = (had_sum.transpose().replicate(n+1, 1) - had_matrix.cast<double>()).rowwise().sum();
+    Eigen::ArrayXd comp_flip_sq_sum = (flip_sum.transpose().replicate(n+1, 1) - flip_matrix.cast<double>()).square().rowwise().sum();
+    Eigen::ArrayXd comp_flip_sum_sq = (had_flip_sum.transpose().replicate(n+1, 1) - had_flip.cast<double>()).rowwise().sum();
 
-    Eigen::ArrayXf comp_sim = (comp_sq_sum + comp_flip_sq_sum - comp_sum_sq - comp_flip_sum_sq)/(fingerprints.cols() * n * (n-1.0));
+    Eigen::ArrayXd comp_sim = (comp_sq_sum + comp_flip_sq_sum - comp_sum_sq - comp_flip_sum_sq)/(fingerprints.cols() * n * (n-1.0));
     return comp_sim;
 }   
 
@@ -171,14 +171,14 @@ Eigen::ArrayXf comp_sim_sm(const Eigen::ArrayXXf fingerprints){
  * @param fingerprints A 2D Eigen Array containing the fingerprints.
  * @return An Eigen::ArrayXf containing the complementary similarity for all fingerprints.
  */
-Eigen::ArrayXf comp_sim_jt(const Eigen::ArrayXXf fingerprints){
+Eigen::ArrayXd comp_sim_jt(const Eigen::ArrayXXf fingerprints){
     int n_objects = fingerprints.rows() - 1;
-    Eigen::ArrayXf sum_sq = process_matrix_sq_data_sum(fingerprints);
-    Eigen::ArrayXf col_sum = process_matrix_data_sum(fingerprints);
-    Eigen::ArrayXf comp_sq_sum = (col_sum.transpose().replicate(n_objects+1, 1) - fingerprints).square().rowwise().sum();   
-    Eigen::ArrayXf comp_sum_sq = (sum_sq.transpose().replicate(n_objects+1, 1) - fingerprints.square()).rowwise().sum();
-    Eigen::ArrayXf comp_sim_denom = (n_objects-1)*comp_sum_sq - 0.5*(comp_sq_sum - comp_sum_sq);
-    Eigen::ArrayXf comp_sim = 0.5*(comp_sq_sum - comp_sum_sq)/comp_sim_denom;
+    Eigen::ArrayXd sum_sq = process_matrix_sq_data_sum(fingerprints);
+    Eigen::ArrayXd col_sum = process_matrix_data_sum(fingerprints);
+    Eigen::ArrayXd comp_sq_sum = (col_sum.transpose().replicate(n_objects+1, 1) - fingerprints.cast<double>()).square().rowwise().sum();   
+    Eigen::ArrayXd comp_sum_sq = (sum_sq.transpose().replicate(n_objects+1, 1) - fingerprints.cast<double>().square()).rowwise().sum();
+    Eigen::ArrayXd comp_sim_denom = (n_objects-1)*comp_sum_sq - 0.5*(comp_sq_sum - comp_sum_sq);
+    Eigen::ArrayXd comp_sim = 0.5*(comp_sq_sum - comp_sum_sq)/comp_sim_denom;
     return comp_sim;
 }
 
@@ -191,7 +191,7 @@ Eigen::ArrayXf comp_sim_jt(const Eigen::ArrayXXf fingerprints){
  * @todo Increase precision to double. 
  */
 // TODO : Increase precision to double 
-Eigen::ArrayXf calculate_comp_sim_real(const Eigen::ArrayXXf fingerprints, std::string n_ary){
+Eigen::ArrayXd calculate_comp_sim_real(const Eigen::ArrayXXf fingerprints, std::string n_ary){
     if (n_ary == "RR"){
         return comp_sim_rr(fingerprints);
     }
@@ -213,7 +213,7 @@ Eigen::ArrayXf calculate_comp_sim_real(const Eigen::ArrayXXf fingerprints, std::
  * @return The index of the medoid fingerprint as an integer.
  */
 int calculate_medoid_real(const Eigen::ArrayXXf data, const std::string n_ary){
-    Eigen::ArrayXf comp_sims = calculate_comp_sim_real(data, n_ary);
+    Eigen::ArrayXd comp_sims = calculate_comp_sim_real(data, n_ary);
     int pos;
     comp_sims.minCoeff(&pos);
     return pos;
@@ -226,7 +226,7 @@ int calculate_medoid_real(const Eigen::ArrayXXf data, const std::string n_ary){
  * @return The index of the outlier fingerprint as an integer.
  */
 int calculate_outlier_real(const Eigen::ArrayXXf data, const std::string n_ary){
-    Eigen::ArrayXf comp_sims = calculate_comp_sim_real(data, n_ary);
+    Eigen::ArrayXd comp_sims = calculate_comp_sim_real(data, n_ary);
     int pos;
     comp_sims.maxCoeff(&pos);
     return pos;
