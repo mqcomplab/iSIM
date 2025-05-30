@@ -47,10 +47,4 @@ Warning: No fingerprints provided.
 [       OK ] testIsim.test_calculate_medoid (393 ms)
 ```
 
-## Known Issues
-
-* The selected indices for the sampling and diversity methods are ordered differently in C++.
- However, this is not an issue as the same indices are being selected, just in a different sequence.
-
-
 \- The iSIM Development Team
