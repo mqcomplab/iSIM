@@ -69,15 +69,26 @@ Eigen::ArrayXXd read_compsim(std::string file_name) {
     }
 }
 
-void compare_arrays(Eigen::ArrayXf cpp_arr, Eigen::ArrayXf python_arr, double threshold){
+void compare_arrays(Eigen::ArrayXf cpp_arr, Eigen::ArrayXf python_arr, double threshold, bool sort){
+    // sort arg is there so that we can compare if the chosen indices are the same regardless of the order
+    // default is false
     ASSERT_EQ(cpp_arr.size(), python_arr.size());
-    bool equal = cpp_arr.isApprox(python_arr, threshold);
-    EXPECT_TRUE(equal);
-    if (!equal){
-        for (int i=0; i<cpp_arr.size(); i++){
-            if (std::abs(cpp_arr(i)-python_arr(i)) > threshold){
-                std::cout << "index: " << i << ", c++ result: " << cpp_arr(i);
-                std::cout << ", python result: " << python_arr(i) << std::endl;
+    if (sort){
+        std::sort(cpp_arr.begin(), cpp_arr.end());
+        std::sort(python_arr.begin(), python_arr.end());
+        bool equal = cpp_arr.isApprox(python_arr, threshold);
+        EXPECT_TRUE(equal);
+    }
+    else{
+        bool equal = cpp_arr.isApprox(python_arr, threshold);
+        EXPECT_TRUE(equal);
+    
+        if (!equal){
+            for (int i=0; i<cpp_arr.size(); i++){
+                if (std::abs(cpp_arr(i)-python_arr(i)) > threshold){
+                    std::cout << "index: " << i << ", c++ result: " << cpp_arr(i);
+                    std::cout << ", python result: " << python_arr(i) << std::endl;
+                }
             }
         }
     }

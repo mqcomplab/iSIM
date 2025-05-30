@@ -8,8 +8,8 @@ TEST_F(testIsim, test_diversity){
     Eigen::ArrayXf idx_jt_python = read_fps("../python_results/diversity_JT_60percent_chembl214.csv");
     Eigen::ArrayXf idx_rr_eigen = Eigen::Map<Eigen::ArrayXi>(idx_rr.data(), idx_rr.size()).cast<float>();
     Eigen::ArrayXf idx_jt_eigen = Eigen::Map<Eigen::ArrayXi>(idx_jt.data(), idx_jt.size()).cast<float>();
-    compare_arrays(idx_rr_eigen, idx_rr_python, threshold);
-    compare_arrays(idx_jt_eigen, idx_jt_python, threshold);
+    compare_arrays(idx_rr_eigen, idx_rr_python, threshold, true);
+    compare_arrays(idx_jt_eigen, idx_jt_python, threshold, true);
 }
 
 TEST_F(testIsim, test_reverse_diversity){
@@ -19,7 +19,7 @@ TEST_F(testIsim, test_reverse_diversity){
     Eigen::ArrayXf idx_jt_python = read_fps("../python_results/reverse_diversity_JT_60percent_chembl214.csv");
     Eigen::ArrayXf idx_rr_eigen = Eigen::Map<Eigen::ArrayXi>(idx_rr.data(), idx_rr.size()).cast<float>();
     Eigen::ArrayXf idx_jt_eigen = Eigen::Map<Eigen::ArrayXi>(idx_jt.data(), idx_jt.size()).cast<float>();
-    compare_arrays(idx_rr_eigen, idx_rr_python, threshold);
-    compare_arrays(idx_jt_eigen, idx_jt_python, threshold);
+    compare_arrays(idx_rr_eigen, idx_rr_python, threshold, true);
+    compare_arrays(idx_jt_eigen, idx_jt_python, threshold, true);
 }
 

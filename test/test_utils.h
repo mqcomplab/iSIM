@@ -19,4 +19,4 @@ class testIsim: public testing::Test{
         double threshold = 1e-6; // threshold for comparing floating point numbers
 };
 
-void compare_arrays(Eigen::ArrayXf cpp_arr, Eigen::ArrayXf python_arr, double threshold);
+void compare_arrays(Eigen::ArrayXf cpp_arr, Eigen::ArrayXf python_arr, double threshold, bool sort=false);
